@@ -1,0 +1,32 @@
+.logo .brand svg {
+  height: 3rem;
+  width: 3rem;
+  fill: var(--accent);
+}
+
+.logo .brand__wrapper {
+  display: flex;
+  align-items: center;
+}
+
+.logo .brand__wrapper span {
+  display: flex;
+}
+
+.landing .brand {
+  fill: var(--warmgrey);
+  width: 100%;
+  display: grid;
+  place-items: center;
+}
+
+.landing .brand svg {
+  height: 15rem;
+  width: 15rem;
+}
+
+@media (prefers-color-scheme: light) {
+  .landing .brand svg {
+    fill: var(--black);
+  }
+}

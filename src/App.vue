@@ -1,85 +1,93 @@
 <script setup>
+import { ref } from 'vue'
 import { RouterLink, RouterView } from 'vue-router'
-import HelloWorld from './components/HelloWorld.vue'
+import brand from '@/assets/brand.svg'
+import Socials from '@/components/Socials.vue'
+
+const showMobile = ref(false)
+
+function showMenu() {
+  showMobile.value = !showMobile.value
+}
 </script>
 
 <template>
   <header>
-    <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" />
-
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
-
-      <nav>
-        <RouterLink to="/">Home</RouterLink>
-        <RouterLink to="/about">About</RouterLink>
-      </nav>
-    </div>
+    <vue-feather
+      type="menu"
+      @click="showMenu()"
+    />
+    <nav :class="['nav-content', showMobile ? 'open-menu' : 'closed-menu']">
+      <div class="logo">
+        <router-link
+          class="brand__wrapper"
+          to="/"
+        >
+          <span class="brand">
+            <brand />
+          </span>
+          YuGiBinder
+        </router-link>
+      </div>
+      <ul class="nav-items">
+        <li>
+          <router-link to="/">Home</router-link>
+        </li>
+        <li>
+          <router-link to="/about">About</router-link>
+        </li>
+        <li>
+          <router-link to="/binders">Binders</router-link>
+        </li>
+        <li>
+          <router-link to="/decks">Decks</router-link>
+        </li>
+      </ul>
+    </nav>
   </header>
-
-  <RouterView />
+  <main>
+    <RouterView />
+  </main>
+  <footer>
+    <p>
+      Made With ❤️ by
+      <a
+        class="link"
+        href="https://github.com/dhershman1"
+        target="_blank"
+        >Dustin Hershman</a
+      >
+    </p>
+    <socials />
+  </footer>
 </template>
 
 <style scoped>
-header {
-  line-height: 1.5;
-  max-height: 100vh;
+main {
+  display: grid;
+}
+
+i {
+  color: var(--white);
+  font-size: 30px;
+  display: none;
 }
 
 .logo {
-  display: block;
-  margin: 0 auto 2rem;
-}
-
-nav {
-  width: 100%;
-  font-size: 12px;
-  text-align: center;
-  margin-top: 2rem;
-}
-
-nav a.router-link-exact-active {
-  color: var(--color-text);
-}
-
-nav a.router-link-exact-active:hover {
-  background-color: transparent;
-}
-
-nav a {
   display: inline-block;
-  padding: 0 1rem;
-  border-left: 1px solid var(--color-border);
+  color: var(--accent);
+  font-size: 30px;
 }
 
-nav a:first-of-type {
-  border: 0;
+.vue-feather--menu {
+  color: var(--white);
 }
 
-@media (min-width: 1024px) {
-  header {
+@media screen and (max-width: 768px) {
+  i {
     display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
-  }
-
-  .logo {
-    margin: 0 2rem 0 0;
-  }
-
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
-
-  nav {
-    text-align: left;
-    margin-left: -1rem;
-    font-size: 1rem;
-
-    padding: 1rem 0;
-    margin-top: 1rem;
+    padding: 1rem;
+    justify-content: end;
   }
 }
 </style>
