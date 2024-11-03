@@ -69,5 +69,8 @@ onMounted(() => {
     <section class="card__text">
       <slot name="text" />
     </section>
+    <section class="card__tags">
+      <slot name="tags" />
+    </section>
   </div>
 </template>
