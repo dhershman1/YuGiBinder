@@ -46,6 +46,10 @@ a:hover {
   color: var(--lightgrey);
 }
 
+main {
+  padding: 0 1.8rem;
+}
+
 footer {
   position: fixed;
   display: flex;
