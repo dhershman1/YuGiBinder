@@ -1,22 +1,13 @@
 <script setup>
 import { onMounted, ref } from 'vue'
 import { Separator } from 'radix-vue'
+import { useCardsStore } from '@/stores/cards'
 import Card from '@/components/Card.vue'
+import Loader from '@/components/Loader.vue'
 
 const recentBinders = ref([])
-const randomCard = ref({})
-
-async function fetchRandoCard() {
-  const response = await fetch('/api/random', {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json'
-    }
-  })
-  const data = await response.json()
-
-  return data.data[0]
-}
+const cardsStore = useCardsStore()
+const loading = ref(true)
 
 onMounted(async () => {
   recentBinders.value = [
@@ -40,15 +31,20 @@ onMounted(async () => {
     }
   ]
   try {
-    randomCard.value = await fetchRandoCard()
+    await cardsStore.retrieveTopCards()
   } catch (err) {
     console.error(err)
+  } finally {
+    loading.value = false
   }
 })
 </script>
 
 <template>
-  <div class="home">
+  <div
+    v-if="!loading"
+    class="home"
+  >
     <section class="binders">
       <h2>Recent Binders</h2>
       <div class="card-container">
@@ -88,15 +84,32 @@ onMounted(async () => {
     </section>
     <separator class="separator__root" />
     <section class="card__specs">
-      <h2>Random YGO Card</h2>
-      <img :src="`https://imgs.yugibinder.com/cards/small/${randomCard.id}.jpg`" />
+      <h2>Current Top 20 Cards</h2>
+      <div
+        class="card-jpg"
+        v-for="card in cardsStore.topCards"
+        :key="card.id"
+        v-motion-slide-visible-top
+      >
+        <img :src="`https://imgs.yugibinder.com/cards/small/${card.id}.jpg`" />
+      </div>
     </section>
   </div>
+  <loader
+    class="center is-large"
+    size="large"
+    v-else
+  />
 </template>
 
 <style scoped>
 .binders h2 {
   text-align: center;
+}
+
+.card-jpg {
+  display: inline-block;
+  margin: 1rem;
 }
 
 .separator__root {
@@ -105,5 +118,18 @@ onMounted(async () => {
   width: 50%;
   margin: auto;
   margin-top: 1rem;
+}
+
+.center {
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.is-large {
+  font-size: 3rem;
+  padding: 1rem;
+  height: 100vh;
 }
 </style>
