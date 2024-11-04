@@ -7,6 +7,7 @@
   --secondary: hsl(0, 100%, 69%);
   --dark-secondary: hsl(8, 49%, 51%);
   --accent: hsl(46, 65%, 52%);
+  --accent-dark: hsl(46, 59%, 40%);
   --shadow: hsla(0, 0%, 0%, 0.13);
   --slategrey: hsl(0, 0%, 17%);
   --warmgrey: hsl(0, 0%, 24%);
@@ -58,6 +59,19 @@ footer {
   justify-content: center;
   gap: 1rem;
   bottom: 0;
+}
+
+.center {
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.is-large {
+  font-size: 3rem;
+  padding: 1rem;
+  height: 100vh;
 }
 
 @media screen and (max-width: 768px) {
