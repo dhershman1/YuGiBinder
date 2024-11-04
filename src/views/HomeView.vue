@@ -90,6 +90,7 @@ onMounted(async () => {
         v-for="card in cardsStore.topCards"
         :key="card.id"
         v-motion-slide-visible-top
+        @click="() => $router.push(`/cards/${card.id}`)"
       >
         <img :src="`https://imgs.yugibinder.com/cards/small/${card.id}.jpg`" />
       </div>
@@ -118,18 +119,5 @@ onMounted(async () => {
   width: 50%;
   margin: auto;
   margin-top: 1rem;
-}
-
-.center {
-  text-align: center;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.is-large {
-  font-size: 3rem;
-  padding: 1rem;
-  height: 100vh;
 }
 </style>
