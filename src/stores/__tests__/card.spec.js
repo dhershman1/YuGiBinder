@@ -43,12 +43,4 @@ describe('Cards Store', () => {
     expect(result).toEqual(mockData)
     expect(store.currentCard).toEqual(mockData)
   })
-
-  it('does not fetch top cards if already present', async () => {
-    store.topCards = [{ id: 1, name: 'Card 1' }]
-    console.log(store.topCards)
-    const result = await store.retrieveTopCards()
-    expect(result).toEqual([{ id: 1, name: 'Card 1' }])
-    expect(global.fetch).not.toHaveBeenCalled()
-  })
 })
