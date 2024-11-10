@@ -47,7 +47,7 @@ onMounted(async () => {
             >
               <img
                 :alt="binder.name"
-                src="/imgs/binder.webp"
+                :src="binder.thumbnail"
               />
             </div>
           </template>
