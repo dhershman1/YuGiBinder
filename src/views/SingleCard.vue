@@ -22,7 +22,7 @@ onMounted(async () => {
   >
     <h1>Card View {{ cardId }}</h1>
     <img
-      :src="`https://imgs.yugibinder.com/cards/small/${cardId}.jpg`"
+      :src="`https://imgs.yugibinder.com/cards/normal/${cardId}.jpg`"
       :alt="cardsStore.currentCard.name"
     />
   </div>
