@@ -24,8 +24,8 @@ const router = createRouter({
     },
     {
       path: '/binders/:id',
-      name: 'cards',
-      component: () => import('../views/CardsView.vue'),
+      name: 'openBinder',
+      component: () => import('../views/OpenBinder.vue'),
       props: true
     },
     {
