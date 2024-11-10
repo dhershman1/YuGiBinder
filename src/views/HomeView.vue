@@ -1,5 +1,6 @@
 <script setup>
 import { onMounted, ref } from 'vue'
+import { Separator } from 'radix-vue'
 import { useCardsStore } from '@/stores/cards'
 import { useBindersStore } from '@/stores/binders'
 import Card from '@/components/Card.vue'
@@ -67,6 +68,7 @@ onMounted(async () => {
         </card>
       </div>
     </section>
+    <separator class="separator__root" />
     <h2>Current Top 20 Cards</h2>
     <section class="card__wrapper">
       <div
@@ -99,6 +101,14 @@ onMounted(async () => {
   gap: 1rem;
   justify-content: center;
   margin-bottom: 3rem;
+}
+
+.separator__root {
+  background-color: var(--accent);
+  height: 1px;
+  width: 50%;
+  margin: auto;
+  margin-top: 1rem;
 }
 
 @media screen and (max-width: 768px) {

@@ -4,6 +4,7 @@ import { useWindowSize } from '@vueuse/core'
 import { useBindersStore } from '@/stores/binders'
 import { useCardsStore } from '@/stores/cards'
 import Loader from '@/components/Loader.vue'
+import SelectBox from '@/components/Inputs/SelectBox.vue'
 
 const props = defineProps({
   id: String
@@ -14,6 +15,12 @@ const { width } = useWindowSize()
 
 const loading = ref(true)
 const binderDisplay = ref('3x3')
+const groups = [
+  {
+    label: 'Display',
+    items: ['1x1', '3x3', '4x3']
+  }
+]
 const pageSizing = computed(() => {
   switch (binderDisplay.value) {
     case '3x3':
@@ -48,14 +55,10 @@ onMounted(async () => {
       <aside class="binder-cards__sidebar">
         <h2>Filters</h2>
         <div class="binder-cards__filters">
-          <button
-            v-for="display in ['3x3', '4x3', '1x1']"
-            :key="display"
-            @click="() => (binderDisplay.value = display)"
-            :class="{ 'is-active': display === binderDisplay }"
-          >
-            {{ display }}
-          </button>
+          <select-box
+            v-model="binderDisplay"
+            :groups="groups"
+          />
         </div>
       </aside>
       <div class="binder-cards__header">
@@ -78,6 +81,6 @@ onMounted(async () => {
 }
 
 .binder-cards__sidebar {
-  border-right: 1px solid #ccc;
+  border-right: 1px solid var(--accent);
 }
 </style>
