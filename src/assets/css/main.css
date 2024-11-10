@@ -28,13 +28,18 @@
 }
 
 html,
-body {
+body,
+#app {
   height: 100vh;
   margin: 0;
 }
 
 html {
   overflow-y: scroll;
+}
+
+main {
+  height: 100%;
 }
 
 a {
