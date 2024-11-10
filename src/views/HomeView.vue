@@ -2,35 +2,21 @@
 import { onMounted, ref } from 'vue'
 import { Separator } from 'radix-vue'
 import { useCardsStore } from '@/stores/cards'
+import { useBindersStore } from '@/stores/binders'
 import Card from '@/components/Card.vue'
 import Loader from '@/components/Loader.vue'
 
-const recentBinders = ref([])
 const cardsStore = useCardsStore()
+const binderStore = useBindersStore()
 const loading = ref(true)
 
 onMounted(async () => {
-  recentBinders.value = [
-    {
-      id: 1,
-      name: 'Binder 1',
-      description: 'This is the first binder',
-      tags: ['yugioh', 'cards', 'relinquished', 'ritual']
-    },
-    {
-      id: 2,
-      name: 'Binder 2',
-      description: 'This is the second binder',
-      tags: ['yugioh', 'cards']
-    },
-    {
-      id: 3,
-      name: 'Binder 3',
-      description: 'This is the third binder',
-      tags: ['yugioh', 'cards']
-    }
-  ]
   try {
+    await binderStore.retrieveBinders({
+      limit: 5,
+      sort: 'desc',
+      order: 'created_at'
+    })
     await cardsStore.retrieveTopCards()
   } catch (err) {
     console.error(err)
@@ -49,7 +35,7 @@ onMounted(async () => {
       <h2>Recent Binders</h2>
       <div class="card-container">
         <card
-          v-for="binder in recentBinders"
+          v-for="binder in binderStore.binders"
           :key="binder.id"
           aria-role="link"
         >
@@ -83,13 +69,13 @@ onMounted(async () => {
       </div>
     </section>
     <separator class="separator__root" />
-    <section class="card__specs">
-      <h2>Current Top 20 Cards</h2>
+    <h2>Current Top 20 Cards</h2>
+    <section class="card__wrapper">
       <div
         class="card-jpg"
         v-for="card in cardsStore.topCards"
         :key="card.id"
-        v-motion-slide-visible-top
+        v-motion-pop-visible-once
         @click="() => $router.push(`/cards/${card.id}`)"
       >
         <img :src="`https://imgs.yugibinder.com/cards/small/${card.id}.jpg`" />
@@ -108,9 +94,13 @@ onMounted(async () => {
   text-align: center;
 }
 
-.card-jpg {
-  display: inline-block;
-  margin: 1rem;
+.card__wrapper {
+  display: flex;
+  width: 100%;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: center;
+  margin-bottom: 3rem;
 }
 
 .separator__root {
@@ -119,5 +109,12 @@ onMounted(async () => {
   width: 50%;
   margin: auto;
   margin-top: 1rem;
+}
+
+@media screen and (max-width: 768px) {
+  .card__wrapper {
+    gap: 0.5rem;
+    margin-bottom: 0;
+  }
 }
 </style>
