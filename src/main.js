@@ -4,6 +4,7 @@ import './assets/css/brand.css'
 import './assets/css/card.css'
 import './assets/css/tags.css'
 import './assets/css/button.css'
+import './assets/css/select.css'
 
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
