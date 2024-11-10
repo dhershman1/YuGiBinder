@@ -5,6 +5,7 @@ export const useCardsStore = defineStore('cards', () => {
   const topCards = ref([])
   const currentCard = ref({})
   const cards = ref([])
+  const cardsInBinder = ref([])
 
   async function retrieveCards(params) {
     const queryString = new URLSearchParams(params).toString()
@@ -54,11 +55,27 @@ export const useCardsStore = defineStore('cards', () => {
     return data
   }
 
+  async function retrieveCardsInBinder(binderId, limit) {
+    const response = await fetch(`/api/binders/${binderId}/cards?limit=${limit}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+
+    const data = await response.json()
+
+    cardsInBinder.value = data
+    return data
+  }
+
   return {
     cards,
+    cardsInBinder,
     currentCard,
     retrieveCards,
     retrieveCardById,
+    retrieveCardsInBinder,
     retrieveTopCards,
     topCards
   }
