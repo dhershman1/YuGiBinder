@@ -13,6 +13,10 @@ const props = defineProps({
     required: false,
     default: ''
   },
+  hasActions: {
+    type: Boolean,
+    default: false
+  },
   icon: {
     type: String,
     default: 'external-link'
@@ -47,7 +51,10 @@ onMounted(() => {
 
 <template>
   <div class="card media-item">
-    <section class="card__actions">
+    <section
+      v-if="hasActions"
+      class="card__actions"
+    >
       <a
         v-if="props.goToLink"
         :href="props.goToLink"
