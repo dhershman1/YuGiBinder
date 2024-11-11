@@ -1,15 +1,27 @@
 <script setup>
 import { ref } from 'vue'
 import { useAuthStore } from '@/stores/auth'
+import { useRouter } from 'vue-router'
 
 const username = ref('')
 const password = ref('')
 
 const authStore = useAuthStore()
+const router = useRouter()
+
+const register = async () => {
+  try {
+    await authStore.register({ username: username.value, password: password.value })
+    router.replace('/')
+  } catch (err) {
+    // Show an error on the UI
+    console.error(err)
+  }
+}
 </script>
 
 <template>
-  <form @submit.prevent="authStore.register({ username, password })">
+  <form @submit.prevent="register">
     <div>
       <label for="username">Username:</label>
       <input
