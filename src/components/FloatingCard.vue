@@ -20,8 +20,8 @@ const updateCardRotation = (event) => {
   // Calculate the rotation angle based on the mouse position
   const deltaX = event.clientX - cardCenterX
   const deltaY = event.clientY - cardCenterY
-  const rotationX = deltaY * 0.05
-  const rotationY = deltaX * -0.05
+  const rotationX = deltaY * 0.09
+  const rotationY = deltaX * -0.09
 
   // Update the card's style to reflect the rotation
   cardStyle.value = {
@@ -65,14 +65,13 @@ onUnmounted(() => {
 .floating-container {
   padding: 1.8rem;
   width: 200px;
-  perspective: 1000px; /* Adds perspective for 3D effect */
+  perspective: 2000px; /* Adds perspective for 3D effect */
 }
 
 .floating-card {
   width: 100%;
   height: 100%;
-  background-color: #ffeb3b;
-  color: #333;
+  background-color: var(--accent);
   display: flex;
   align-items: center;
   justify-content: center;
