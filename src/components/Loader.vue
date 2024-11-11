@@ -2,7 +2,7 @@
 import { computed } from 'vue'
 
 const props = defineProps({
-  style: {
+  loaderStyle: {
     type: String,
     default: 'wave'
   },
@@ -27,7 +27,7 @@ const size = computed(() => {
 <template>
   <div class="loader">
     <svg
-      v-if="style === 'wave'"
+      v-if="loaderStyle === 'wave'"
       version="1.1"
       id="Layer_1"
       xmlns="http://www.w3.org/2000/svg"
@@ -114,15 +114,15 @@ const size = computed(() => {
       </rect>
     </svg>
     <svg
-      v-else-if="style === 'vertical'"
+      v-else-if="loaderStyle === 'vertical'"
       version="1.1"
       id="Layer_1"
       xmlns="http://www.w3.org/2000/svg"
       xmlns:xlink="http://www.w3.org/1999/xlink"
       x="0px"
       y="0px"
-      width="24px"
-      height="30px"
+      :width="size.width"
+      :height="size.height"
       viewBox="0 0 24 30"
       style="enable-background: new 0 0 50 50"
       xml:space="preserve"
