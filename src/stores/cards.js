@@ -1,7 +1,9 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
+import { usePaginationStore } from './pagination'
 
 export const useCardsStore = defineStore('cards', () => {
+  const pagination = usePaginationStore()
   const topCards = ref([])
   const currentCard = ref({})
   const cards = ref([])
@@ -20,7 +22,10 @@ export const useCardsStore = defineStore('cards', () => {
 
     const data = await response.json()
 
-    return data
+    cards.value = data.results
+    pagination.setPaginationData(data.pagination)
+
+    return data.results
   }
 
   async function retrieveTopCards() {
