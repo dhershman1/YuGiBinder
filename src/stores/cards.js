@@ -41,6 +41,20 @@ export const useCardsStore = defineStore('cards', () => {
     return data
   }
 
+  async function retrieveRandomCard() {
+    const response = await fetch('/api/cards/random', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+
+    const data = await response.json()
+
+    currentCard.value = data
+    return data
+  }
+
   async function retrieveCardById(id) {
     const response = await fetch(`/api/cards/${id}`, {
       method: 'GET',
@@ -78,6 +92,7 @@ export const useCardsStore = defineStore('cards', () => {
     retrieveCards,
     retrieveCardById,
     retrieveCardsInBinder,
+    retrieveRandomCard,
     retrieveTopCards,
     topCards
   }

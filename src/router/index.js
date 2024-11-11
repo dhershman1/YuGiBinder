@@ -23,10 +23,23 @@ const router = createRouter({
       component: () => import('../views/BindersView.vue')
     },
     {
+      path: '/binder/random',
+      name: 'randomBinder',
+      component: () => import('../views/OpenBinder.vue'),
+      props: true,
+      meta: { random: true }
+    },
+    {
       path: '/binders/:id',
       name: 'openBinder',
       component: () => import('../views/OpenBinder.vue'),
       props: true
+    },
+    {
+      path: '/card/random',
+      name: 'randomCard',
+      component: () => import('../views/SingleCard.vue'),
+      props: { isRandom: true }
     },
     {
       path: '/cards/:cardId',

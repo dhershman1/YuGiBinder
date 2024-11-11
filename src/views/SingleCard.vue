@@ -5,14 +5,25 @@ import Loader from '@/components/Loader.vue'
 import FloatingCard from '@/components/FloatingCard.vue'
 
 const props = defineProps({
-  cardId: String
+  cardId: String,
+  isRandom: Boolean
 })
 const cardsStore = useCardsStore()
 const loading = ref(true)
 
 onMounted(async () => {
-  await cardsStore.retrieveCardById(props.cardId)
-  loading.value = false
+  try {
+    if (props.isRandom) {
+      await cardsStore.retrieveRandomCard()
+    } else {
+      await cardsStore.retrieveCardById(props.cardId)
+    }
+    loading.value = false
+  } catch (error) {
+    console.error(error)
+  } finally {
+    loading.value = false
+  }
 })
 </script>
 
@@ -21,8 +32,8 @@ onMounted(async () => {
     v-if="!loading"
     class="card-view"
   >
-    <h1>Card View {{ cardId }}</h1>
-    <floating-card :img="`https://imgs.yugibinder.com/cards/small/${cardId}.jpg`" />
+    <h1>Card View {{ cardsStore.currentCard.id }}</h1>
+    <floating-card :img="`https://imgs.yugibinder.com/cards/small/${cardsStore.currentCard.id}.jpg`" />
   </div>
   <loader
     v-else
