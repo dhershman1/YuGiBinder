@@ -72,7 +72,9 @@ router.beforeEach(async (to, from, next) => {
   //   return next({ name: 'login' })
   // }
 
-  await authStore.checkToken()
+  if (authStore.token) {
+    await authStore.checkToken()
+  }
 
   next()
 })
