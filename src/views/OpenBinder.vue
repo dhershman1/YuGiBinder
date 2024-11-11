@@ -7,6 +7,7 @@ import { marked } from 'marked'
 import { useBindersStore } from '@/stores/binders'
 import { useCardsStore } from '@/stores/cards'
 import { useRarityStore } from '@/stores/rarity'
+import { useAuthStore } from '@/stores/auth'
 import Loader from '@/components/Loader.vue'
 import DropDownCircle from '@/components/DropDownCircle.vue'
 import FiltersSidebar from '@/components/FiltersSidebar.vue'
@@ -18,6 +19,7 @@ const props = defineProps({
 const binderStore = useBindersStore()
 const cardsStore = useCardsStore()
 const rarityStore = useRarityStore()
+const authStore = useAuthStore()
 const { width } = useWindowSize()
 
 const loading = ref(true)
@@ -30,6 +32,9 @@ const backgroundStyle = computed(() => ({
   backgroundSize: 'cover',
   backgroundPosition: 'right'
 }))
+const canModify = computed(() => {
+  return binderStore.currentBinder.created_by === authStore.user.id
+})
 
 function translateEdition(edition) {
   // This function is going to take edition and turn it into a simplified version
@@ -175,7 +180,10 @@ onMounted(async () => {
               Like
             </button>
           </section>
-          <section class="bc--cntr">
+          <section
+            v-if="canModify"
+            class="bc--cntr"
+          >
             <router-link
               class="btn btn__primary has-icon"
               :to="`/binders/${binderStore.currentBinder.id}/edit`"
