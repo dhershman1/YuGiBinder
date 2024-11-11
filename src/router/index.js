@@ -26,8 +26,7 @@ const router = createRouter({
       path: '/binder/random',
       name: 'randomBinder',
       component: () => import('../views/OpenBinder.vue'),
-      props: true,
-      meta: { random: true }
+      props: { isRandom: true }
     },
     {
       path: '/binders/:id',

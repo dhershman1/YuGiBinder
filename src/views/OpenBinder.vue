@@ -12,7 +12,8 @@ import DropDownCircle from '@/components/DropDownCircle.vue'
 import FiltersSidebar from '@/components/FiltersSidebar.vue'
 
 const props = defineProps({
-  id: String
+  id: String,
+  isRandom: Boolean
 })
 const binderStore = useBindersStore()
 const cardsStore = useCardsStore()
@@ -77,6 +78,7 @@ function formatDate(date) {
 }
 
 onMounted(async () => {
+  console.log(props.isRandom)
   if (width.value < 768) {
     pageSizing.value = 6
   } else if (width.value < 1024) {
@@ -84,12 +86,19 @@ onMounted(async () => {
   } else {
     pageSizing.value = 12
   }
-
-  await binderStore.retrieveBinderById(props.id)
-  await cardsStore.retrieveCardsInBinder(props.id, {
-    limit: pageSizing.value,
-    offset: 0
-  })
+  if (props.isRandom) {
+    await binderStore.retrieveRandomBinder()
+    await cardsStore.retrieveCardsInBinder(binderStore.currentBinder.id, {
+      limit: pageSizing.value,
+      offset: 0
+    })
+  } else {
+    await binderStore.retrieveBinderById(props.id)
+    await cardsStore.retrieveCardsInBinder(props.id, {
+      limit: pageSizing.value,
+      offset: 0
+    })
+  }
   loading.value = false
 })
 </script>
