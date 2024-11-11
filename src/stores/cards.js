@@ -55,8 +55,10 @@ export const useCardsStore = defineStore('cards', () => {
     return data
   }
 
-  async function retrieveCardsInBinder(binderId, limit) {
-    const response = await fetch(`/api/binders/${binderId}/cards?limit=${limit}`, {
+  async function retrieveCardsInBinder(binderId, params) {
+    const queryString = new URLSearchParams(params).toString()
+    const url = `/api/binders/${binderId}/cards?${queryString}`
+    const response = await fetch(url, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json'
