@@ -116,13 +116,13 @@ const { width } = useWindowSize()
               <ul class="List one">
                 <li>
                   <NavigationMenuLink as-child>
-                    <router-link
+                    <a
                       class="ListItemLink"
-                      to="/binder/random"
+                      href="/binder/random"
                     >
                       <div class="ListItemHeading">Binder</div>
                       <p class="ListItemText">Load up a random binder.</p>
-                    </router-link>
+                    </a>
                   </NavigationMenuLink>
                 </li>
                 <li>
