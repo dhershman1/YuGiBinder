@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
+import { useAuthStore } from '@/stores/auth'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -50,8 +51,30 @@ const router = createRouter({
       path: '/card-catalog',
       name: 'cardCatalog',
       component: () => import('../views/CardCatalog.vue')
+    },
+    {
+      path: '/register',
+      name: 'register',
+      component: () => import('../views/RegisterUser.vue')
+    },
+    {
+      path: '/login',
+      name: 'login',
+      component: () => import('../views/LoginUser.vue')
     }
   ]
+})
+
+router.beforeEach(async (to, from, next) => {
+  const authStore = useAuthStore()
+  // Redirect to login if not authenticated
+  // if (to.name !== 'login' && !useAuthStore().checkToken()) {
+  //   return next({ name: 'login' })
+  // }
+
+  await authStore.checkToken()
+
+  next()
 })
 
 export default router
