@@ -2,6 +2,7 @@
 import { onMounted, ref } from 'vue'
 import { useCardsStore } from '@/stores/cards'
 import Loader from '@/components/Loader.vue'
+import FloatingCard from '@/components/FloatingCard.vue'
 
 const props = defineProps({
   cardId: String
@@ -21,10 +22,7 @@ onMounted(async () => {
     class="card-view"
   >
     <h1>Card View {{ cardId }}</h1>
-    <img
-      :src="`https://imgs.yugibinder.com/cards/normal/${cardId}.jpg`"
-      :alt="cardsStore.currentCard.name"
-    />
+    <floating-card :img="`https://imgs.yugibinder.com/cards/small/${cardId}.jpg`" />
   </div>
   <loader
     v-else
