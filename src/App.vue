@@ -13,8 +13,10 @@ import {
 import brand from '@/assets/brand.svg'
 import Socials from '@/components/Socials.vue'
 import { useWindowSize } from '@vueuse/core'
+import { useAuthStore } from './stores/auth'
 
 const { width } = useWindowSize()
+const authStore = useAuthStore()
 </script>
 
 <template>
@@ -31,10 +33,7 @@ const { width } = useWindowSize()
           <span v-if="width > 768"> YuGiBinder </span>
         </router-link>
       </div>
-      <NavigationMenuRoot
-        v-model="currentTrigger"
-        class="NavigationMenuRoot"
-      >
+      <NavigationMenuRoot class="NavigationMenuRoot">
         <NavigationMenuList class="NavigationMenuList">
           <NavigationMenuItem>
             <NavigationMenuLink
@@ -64,6 +63,63 @@ const { width } = useWindowSize()
           </NavigationMenuItem>
           <NavigationMenuItem>
             <NavigationMenuTrigger class="NavigationMenuTrigger">
+              Account
+              <vue-feather
+                type="chevron-down"
+                class="CaretDown"
+              />
+            </NavigationMenuTrigger>
+            <NavigationMenuContent class="NavigationMenuContent">
+              <ul class="List one">
+                <li v-if="!authStore.token">
+                  <NavigationMenuLink as-child>
+                    <router-link
+                      class="ListItemLink"
+                      to="/login"
+                    >
+                      <div class="ListItemHeading">Login</div>
+                      <p class="ListItemText">Login to the application if you already have an account.</p>
+                    </router-link>
+                  </NavigationMenuLink>
+                </li>
+                <li v-if="!authStore.token">
+                  <NavigationMenuLink as-child>
+                    <router-link
+                      class="ListItemLink"
+                      to="/register"
+                    >
+                      <div class="ListItemHeading">Register</div>
+                      <p class="ListItemText">Register a new account if you don't have one.</p>
+                    </router-link>
+                  </NavigationMenuLink>
+                </li>
+                <li v-if="authStore.token">
+                  <NavigationMenuLink as-child>
+                    <router-link
+                      class="ListItemLink"
+                      to="/register"
+                    >
+                      <div class="ListItemHeading">My Account</div>
+                      <p class="ListItemText">View your account</p>
+                    </router-link>
+                  </NavigationMenuLink>
+                </li>
+                <li v-if="authStore.token">
+                  <NavigationMenuLink as-child>
+                    <span
+                      class="ListItemLink"
+                      @click="authStore.logout"
+                    >
+                      <div class="ListItemHeading">Logout</div>
+                      <p class="ListItemText">Logout of the application</p>
+                    </span>
+                  </NavigationMenuLink>
+                </li>
+              </ul>
+            </NavigationMenuContent>
+          </NavigationMenuItem>
+          <NavigationMenuItem>
+            <NavigationMenuTrigger class="NavigationMenuTrigger">
               Binders
               <vue-feather
                 type="chevron-down"
@@ -85,6 +141,17 @@ const { width } = useWindowSize()
                 </li>
                 <li>
                   <NavigationMenuLink as-child>
+                    <a
+                      class="ListItemLink"
+                      href="/binder/random"
+                    >
+                      <div class="ListItemHeading">Random Binder</div>
+                      <p class="ListItemText">Load up a random binder.</p>
+                    </a>
+                  </NavigationMenuLink>
+                </li>
+                <li v-if="authStore.token">
+                  <NavigationMenuLink as-child>
                     <router-link
                       class="ListItemLink"
                       to="/create"
@@ -94,7 +161,7 @@ const { width } = useWindowSize()
                     </router-link>
                   </NavigationMenuLink>
                 </li>
-                <li>
+                <li v-if="authStore.token">
                   <NavigationMenuLink as-child>
                     <router-link
                       class="ListItemLink"
@@ -110,7 +177,7 @@ const { width } = useWindowSize()
           </NavigationMenuItem>
           <NavigationMenuItem>
             <NavigationMenuTrigger class="NavigationMenuTrigger">
-              <vue-feather type="shuffle" />
+              Cards
               <vue-feather
                 type="chevron-down"
                 class="CaretDown"
@@ -120,13 +187,13 @@ const { width } = useWindowSize()
               <ul class="List one">
                 <li>
                   <NavigationMenuLink as-child>
-                    <a
+                    <router-link
                       class="ListItemLink"
-                      href="/binder/random"
+                      to="/card-catalog"
                     >
-                      <div class="ListItemHeading">Binder</div>
-                      <p class="ListItemText">Load up a random binder.</p>
-                    </a>
+                      <div class="ListItemHeading">Card Catalog</div>
+                      <p class="ListItemText">Go to the Card Catalog</p>
+                    </router-link>
                   </NavigationMenuLink>
                 </li>
                 <li>
@@ -135,7 +202,7 @@ const { width } = useWindowSize()
                       class="ListItemLink"
                       href="/card/random"
                     >
-                      <div class="ListItemHeading">Card</div>
+                      <div class="ListItemHeading">Random Card</div>
                       <p class="ListItemText">Click to find a random card.</p>
                     </a>
                   </NavigationMenuLink>
