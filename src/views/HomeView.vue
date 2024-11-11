@@ -103,14 +103,6 @@ onMounted(async () => {
   margin-bottom: 3rem;
 }
 
-.separator__root {
-  background-color: var(--accent);
-  height: 1px;
-  width: 50%;
-  margin: auto;
-  margin-top: 1rem;
-}
-
 @media screen and (max-width: 768px) {
   .card__wrapper {
     gap: 0.5rem;
