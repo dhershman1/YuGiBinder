@@ -1,23 +1,25 @@
 <script setup>
-import { ref } from 'vue'
 import { RouterLink, RouterView } from 'vue-router'
+import {
+  NavigationMenuContent,
+  NavigationMenuIndicator,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuRoot,
+  NavigationMenuTrigger,
+  NavigationMenuViewport
+} from 'radix-vue'
 import brand from '@/assets/brand.svg'
 import Socials from '@/components/Socials.vue'
+import { useWindowSize } from '@vueuse/core'
 
-const showMobile = ref(false)
-
-function showMenu() {
-  showMobile.value = !showMobile.value
-}
+const { width } = useWindowSize()
 </script>
 
 <template>
   <header>
-    <vue-feather
-      type="menu"
-      @click="showMenu()"
-    />
-    <nav :class="['nav-content', showMobile ? 'open-menu' : 'closed-menu']">
+    <section class="navbar">
       <div class="logo">
         <router-link
           class="brand__wrapper"
@@ -26,24 +28,128 @@ function showMenu() {
           <span class="brand">
             <brand />
           </span>
-          YuGiBinder
+          <span v-if="width > 768"> YuGiBinder </span>
         </router-link>
       </div>
-      <ul class="nav-items">
-        <li>
-          <router-link to="/">Home</router-link>
-        </li>
-        <li>
-          <router-link to="/about">About</router-link>
-        </li>
-        <li>
-          <router-link to="/binders">Binders</router-link>
-        </li>
-        <li>
-          <router-link to="/decks">Decks</router-link>
-        </li>
-      </ul>
-    </nav>
+      <NavigationMenuRoot
+        v-model="currentTrigger"
+        class="NavigationMenuRoot"
+      >
+        <NavigationMenuList class="NavigationMenuList">
+          <NavigationMenuItem>
+            <NavigationMenuLink
+              class="NavigationMenuLink"
+              as-child
+            >
+              <router-link
+                class="ListItemLink"
+                to="/"
+              >
+                Home
+              </router-link>
+            </NavigationMenuLink>
+          </NavigationMenuItem>
+          <NavigationMenuItem>
+            <NavigationMenuLink
+              class="NavigationMenuLink"
+              as-child
+            >
+              <router-link
+                class="ListItemLink"
+                to="/about"
+              >
+                About
+              </router-link>
+            </NavigationMenuLink>
+          </NavigationMenuItem>
+          <NavigationMenuItem>
+            <NavigationMenuTrigger class="NavigationMenuTrigger">
+              Binders
+              <vue-feather
+                type="chevron-down"
+                class="CaretDown"
+              />
+            </NavigationMenuTrigger>
+            <NavigationMenuContent class="NavigationMenuContent">
+              <ul class="List one">
+                <li>
+                  <NavigationMenuLink as-child>
+                    <router-link
+                      class="ListItemLink"
+                      to="/binders"
+                    >
+                      <div class="ListItemHeading">See All</div>
+                      <p class="ListItemText">See and sift through all the binders on YuGiBinder.</p>
+                    </router-link>
+                  </NavigationMenuLink>
+                </li>
+                <li>
+                  <NavigationMenuLink as-child>
+                    <router-link
+                      class="ListItemLink"
+                      to="/create"
+                    >
+                      <div class="ListItemHeading">Create</div>
+                      <p class="ListItemText">Create a new Binder.</p>
+                    </router-link>
+                  </NavigationMenuLink>
+                </li>
+                <li>
+                  <NavigationMenuLink as-child>
+                    <router-link
+                      class="ListItemLink"
+                      to="/my-binders"
+                    >
+                      <div class="ListItemHeading">My Binders</div>
+                      <p class="ListItemText">Checkout the binders you've made.</p>
+                    </router-link>
+                  </NavigationMenuLink>
+                </li>
+              </ul>
+            </NavigationMenuContent>
+          </NavigationMenuItem>
+          <NavigationMenuItem>
+            <NavigationMenuTrigger class="NavigationMenuTrigger">
+              <vue-feather type="shuffle" />
+            </NavigationMenuTrigger>
+            <NavigationMenuContent class="NavigationMenuContent">
+              <ul class="List one">
+                <li>
+                  <NavigationMenuLink as-child>
+                    <router-link
+                      class="ListItemLink"
+                      to="/binder/random"
+                    >
+                      <div class="ListItemHeading">Binder</div>
+                      <p class="ListItemText">Load up a random binder.</p>
+                    </router-link>
+                  </NavigationMenuLink>
+                </li>
+                <li>
+                  <NavigationMenuLink as-child>
+                    <router-link
+                      class="ListItemLink"
+                      to="/card/random"
+                    >
+                      <div class="ListItemHeading">Card</div>
+                      <p class="ListItemText">Click to find a random card.</p>
+                    </router-link>
+                  </NavigationMenuLink>
+                </li>
+              </ul>
+            </NavigationMenuContent>
+          </NavigationMenuItem>
+
+          <NavigationMenuIndicator class="NavigationMenuIndicator">
+            <div class="Arrow" />
+          </NavigationMenuIndicator>
+        </NavigationMenuList>
+
+        <div class="ViewportPosition">
+          <NavigationMenuViewport class="NavigationMenuViewport" />
+        </div>
+      </NavigationMenuRoot>
+    </section>
   </header>
   <main>
     <RouterView />
@@ -67,10 +173,9 @@ main {
   display: grid;
 }
 
-i {
-  color: var(--white);
-  font-size: 30px;
-  display: none;
+.navbar {
+  display: flex;
+  align-items: center;
 }
 
 .logo {

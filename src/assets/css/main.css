@@ -38,6 +38,12 @@ html {
   overflow-y: scroll;
 }
 
+/* reset */
+button,
+p {
+  all: unset;
+}
+
 main {
   min-height: 100vh;
   padding: 0 1.8rem;
@@ -48,10 +54,6 @@ a {
   transition: all ease 0.2s;
   text-decoration: none;
   color: var(--accent);
-}
-
-a:hover {
-  color: var(--lightgrey);
 }
 
 footer {
