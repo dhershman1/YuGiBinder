@@ -195,7 +195,6 @@ main {
 @media screen and (max-width: 768px) {
   i {
     display: flex;
-    padding: 1rem;
     justify-content: end;
   }
 }

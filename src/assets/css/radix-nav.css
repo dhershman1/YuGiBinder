@@ -42,7 +42,7 @@ p {
 }
 .NavigationMenuTrigger:hover,
 .NavigationMenuLink:hover {
-  background-color: var(--lightgrey);
+  background-color: var(--lighgrey);
 }
 
 .NavigationMenuTrigger {
@@ -166,7 +166,7 @@ p {
   box-shadow: 0 0 0 2px var(--accent);
 }
 .ListItemLink:hover {
-  background-color: var(--lightgrey);
+  background-color: var(--shadow);
 }
 
 .ListItemHeading {
@@ -328,7 +328,7 @@ p {
   }
 }
 
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 600px) {
   .NavigationMenuTrigger {
     gap: 0;
     padding: 0;
