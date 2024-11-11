@@ -111,6 +111,10 @@ const { width } = useWindowSize()
           <NavigationMenuItem>
             <NavigationMenuTrigger class="NavigationMenuTrigger">
               <vue-feather type="shuffle" />
+              <vue-feather
+                type="chevron-down"
+                class="CaretDown"
+              />
             </NavigationMenuTrigger>
             <NavigationMenuContent class="NavigationMenuContent">
               <ul class="List one">
