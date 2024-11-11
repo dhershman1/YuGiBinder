@@ -78,7 +78,6 @@ function formatDate(date) {
 }
 
 onMounted(async () => {
-  console.log(props.isRandom)
   if (width.value < 768) {
     pageSizing.value = 6
   } else if (width.value < 1024) {
@@ -164,7 +163,39 @@ onMounted(async () => {
             />
           </section>
         </aside>
-        <section class="binder-cards__charts"></section>
+        <aside class="binder-cards__action-panel">
+          <h1 class="binder-cards__name">Action Panel</h1>
+          <section class="bc--cntr">
+            <button class="btn btn__primary has-icon">
+              <vue-feather type="pie-chart" />
+              See Stats
+            </button>
+            <button class="btn btn__primary has-icon">
+              <vue-feather type="thumbs-up" />
+              Like
+            </button>
+          </section>
+          <section class="bc--cntr">
+            <router-link
+              class="btn btn__primary has-icon"
+              :to="`/binders/${binderStore.currentBinder.id}/edit`"
+            >
+              <vue-feather type="edit" />
+              Edit Binder
+            </router-link>
+            <router-link
+              to="/card-catalog"
+              class="btn btn__primary has-icon"
+            >
+              <vue-feather type="plus-circle" />
+              Add Cards
+            </router-link>
+            <button class="btn btn__primary has-icon">
+              <vue-feather type="trash-2" />
+              Delete Binder
+            </button>
+          </section>
+        </aside>
       </div>
       <div
         class="binder-cards__description"
@@ -216,10 +247,16 @@ onMounted(async () => {
 
 .binder-cards__wrapper {
   display: grid;
+  gap: 0.5rem;
   grid-template-columns: 2fr 2fr;
 }
 
-.binder-cards__header {
+.binder-cards__action-panel h1 {
+  max-height: 2.2rem;
+}
+
+.binder-cards__header,
+.binder-cards__action-panel {
   background: transparent;
   padding: 1rem;
   border-radius: 5px;
