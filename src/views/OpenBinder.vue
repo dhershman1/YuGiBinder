@@ -8,6 +8,8 @@ import { useBindersStore } from '@/stores/binders'
 import { useCardsStore } from '@/stores/cards'
 import { useRarityStore } from '@/stores/rarity'
 import Loader from '@/components/Loader.vue'
+import DropDownCircle from '@/components/DropDownCircle.vue'
+import FiltersSidebar from '@/components/FiltersSidebar.vue'
 
 const props = defineProps({
   id: String
@@ -93,103 +95,116 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="binder-cards">
-    <section v-if="!loading">
-      <aside class="binder-cards__sidebar">
-        <h2>Filters</h2>
-        <div class="binder-cards__filters"></div>
-      </aside>
-      <section class="binder-cards__content">
-        <div class="binder-cards__wrapper">
-          <aside
-            class="binder-cards__header"
-            :style="backgroundStyle"
-          >
-            <h1 class="binder-cards__name">{{ binderStore.currentBinder.name }}</h1>
-            <section class="binder-cards__info">
-              <span class="bc--cntr">
-                <vue-feather type="user" />
-                Created by: {{ binderStore.currentBinder.created_by || 'Unknown' }}
-              </span>
-            </section>
-            <section class="binder-cards__dates">
-              <span class="bc--cntr">
-                <vue-feather type="calendar" />
-                Created at: {{ formatDate(binderStore.currentBinder.created_at) }}
-              </span>
-              <span class="bc--cntr">
-                <vue-feather type="calendar" /> Last Updated at:
-                {{ formatDate(binderStore.currentBinder.updated_at) }}
-              </span>
-            </section>
-            <section class="binder-cards__metadata">
-              <span class="bc--cntr">
-                <vue-feather type="eye" />
-                {{ binderStore.currentBinder.views }} Views
-              </span>
+  <div
+    class="binder-cards"
+    v-if="!loading"
+  >
+    <filters-sidebar />
+    <section class="binder-cards__content">
+      <div class="binder-cards__wrapper">
+        <aside
+          class="binder-cards__header"
+          :style="backgroundStyle"
+        >
+          <h1 class="binder-cards__name">{{ binderStore.currentBinder.name }}</h1>
+          <section class="binder-cards__info">
+            <span class="bc--cntr">
+              <vue-feather type="user" />
+              Created by: {{ binderStore.currentBinder.created_by || 'Unknown' }}
+            </span>
+          </section>
+          <section class="binder-cards__dates">
+            <span class="bc--cntr">
+              <vue-feather type="calendar" />
+              Created at: {{ formatDate(binderStore.currentBinder.created_at) }}
+            </span>
+            <span class="bc--cntr">
+              <vue-feather type="calendar" /> Last Updated at:
+              {{ formatDate(binderStore.currentBinder.updated_at) }}
+            </span>
+          </section>
+          <section class="binder-cards__metadata">
+            <span class="bc--cntr">
+              <vue-feather type="eye" />
+              {{ binderStore.currentBinder.views }} Views
+            </span>
+            <span
+              class="bc--cntr"
+              title="Cards in Binder"
+            >
+              <vue-feather type="layers" />
+              {{ cardsStore.cardsInBinder.length }}
+            </span>
+            <span
+              v-if="binderStore.currentBinder.tags.length < 4 && width > 768"
+              class="bc__tags__container"
+            >
               <span
                 class="bc--cntr"
-                title="Cards in Binder"
+                v-for="tag in binderStore.currentBinder.tags"
+                :key="tag"
               >
-                <vue-feather type="layers" />
-                {{ cardsStore.cardsInBinder.length }}
+                <vue-feather type="tag" />
+                {{ tag }}
               </span>
-              <span class="bc__tags__container">
-                <span
-                  class="bc--cntr"
-                  v-for="tag in binderStore.currentBinder.tags"
-                  :key="tag"
-                >
-                  <vue-feather type="tag" />
-                  {{ tag }}
-                </span>
-              </span>
-            </section>
-          </aside>
-          <section class="binder-cards__charts"></section>
-        </div>
-        <div
-          class="binder-cards__description"
-          v-html="parsedContent"
-        ></div>
-        <div class="binder-cards__ygo-cards">
-          <div
-            v-for="card in cardsStore.cardsInBinder"
-            :key="card.id"
-            class="media-item img-container"
-          >
-            <img
-              class="ygo__card"
-              :src="`https://imgs.yugibinder.com/cards/normal/${card.id}.jpg`"
-              :alt="card.name"
-              @click="() => $router.push(`/cards/${card.id}`)"
+            </span>
+            <drop-down-circle
+              v-else
+              :icon="'tag'"
+              :items="binderStore.currentBinder.tags"
             />
-            <div
-              :title="card.rarity"
-              :class="['corner-tag', removeWhiteSpace(card.rarity)]"
-            >
-              <span class="rarity">{{ rarityStore.getRarityAcronym(card.rarity) }}</span>
-            </div>
-            <div
-              :title="card.edition"
-              class="edition-tag"
-              :style="getSpacingStyles(card)"
-            >
-              <span>{{ translateEdition(card.edition) }}</span>
-            </div>
+          </section>
+        </aside>
+        <section class="binder-cards__charts"></section>
+      </div>
+      <div
+        class="binder-cards__description"
+        v-html="parsedContent"
+      ></div>
+      <div class="binder-cards__ygo-cards">
+        <div
+          v-for="card in cardsStore.cardsInBinder"
+          :key="card.id"
+          class="media-item img-container"
+        >
+          <img
+            class="ygo__card"
+            :src="`https://imgs.yugibinder.com/cards/normal/${card.id}.jpg`"
+            :alt="card.name"
+            @click="() => $router.push(`/cards/${card.id}`)"
+          />
+          <div
+            :title="card.rarity"
+            :class="['corner-tag', removeWhiteSpace(card.rarity)]"
+          >
+            <span class="rarity">{{ rarityStore.getRarityAcronym(card.rarity) }}</span>
+          </div>
+          <div
+            :title="card.edition"
+            class="edition-tag"
+            :style="getSpacingStyles(card)"
+          >
+            <span>{{ translateEdition(card.edition) }}</span>
           </div>
         </div>
-      </section>
+      </div>
     </section>
-    <loader
-      class="center is-large"
-      size="large"
-      v-else
-    />
   </div>
+  <loader
+    class="center is-large"
+    size="large"
+    v-else
+  />
 </template>
 
 <style scoped>
+.binder-cards {
+  margin-bottom: 2rem;
+  display: grid;
+  grid-template-columns: 1fr 6fr;
+  height: 100%;
+}
+
 .binder-cards__wrapper {
   display: grid;
   grid-template-columns: 2fr 2fr;
@@ -207,10 +222,6 @@ onMounted(async () => {
   margin-top: 1rem;
   display: grid;
   grid-template-rows: 1fr 1fr;
-}
-
-.binder-cards {
-  margin-bottom: 2rem;
 }
 
 .bc--cntr {
@@ -240,12 +251,6 @@ onMounted(async () => {
 .binder-cards__name {
   margin: 0;
   font-size: 24px;
-}
-
-.binder-cards > section {
-  display: grid;
-  grid-template-columns: 1fr 6fr;
-  height: 100%;
 }
 
 .binder-cards__description {
@@ -490,6 +495,10 @@ onMounted(async () => {
     margin-bottom: 0;
   }
 
+  .binder-cards__dates {
+    flex-direction: column;
+  }
+
   .binder-cards__ygo-cards {
     grid-template-columns: repeat(2, 1fr);
   }
@@ -500,6 +509,11 @@ onMounted(async () => {
   .edition-tag {
     left: 3rem;
     font-size: 12px;
+  }
+
+  .binder-cards__wrapper {
+    display: grid;
+    grid-template-columns: 1fr;
   }
 }
 </style>
