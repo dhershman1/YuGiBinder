@@ -150,11 +150,11 @@ const authStore = useAuthStore()
                     </a>
                   </NavigationMenuLink>
                 </li>
-                <li v-if="authStore.token">
+                <li v-if="authStore.token && authStore.hasAccess('add:binder')">
                   <NavigationMenuLink as-child>
                     <router-link
                       class="ListItemLink"
-                      to="/create"
+                      to="/binder/create"
                     >
                       <div class="ListItemHeading">Create</div>
                       <p class="ListItemText">Create a new Binder.</p>
