@@ -6,6 +6,8 @@ import './assets/css/tags.css'
 import './assets/css/button.css'
 import './assets/css/select.css'
 import './assets/css/radix-nav.css'
+import './assets/css/radix-dialog.css'
+import 'vue-virtual-scroller/dist/vue-virtual-scroller.css'
 
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
