@@ -13,7 +13,7 @@ export const useAuthStore = defineStore('auth', () => {
       return false
     }
 
-    if (user.value.role === 'admin') {
+    if (user.value.role === 'superadmin') {
       return true
     }
 

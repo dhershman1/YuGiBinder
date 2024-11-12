@@ -61,6 +61,11 @@ const router = createRouter({
       path: '/login',
       name: 'login',
       component: () => import('../views/LoginUser.vue')
+    },
+    {
+      path: '/binder/create',
+      name: 'createBinder',
+      component: () => import('../views/CreateBinder.vue')
     }
   ]
 })
