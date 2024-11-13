@@ -18,6 +18,9 @@ This is the place where most of the thoughts and ideas behind YuGiBinder are lai
   - I know https://db.ygoresources.com/about/api offers multi language support for a lot of YGO card prints, might be worth looking into
     - This would require the implementation of vue-i18n and a total rewrite of a lot of the language on the app
     - But at the same time better to get ahead of it than anything right?
+- Liked Binders
+  - See all the binders you've liked
+  - Maybe I make this into a filter?
 
 ## Binder Ideas
 
