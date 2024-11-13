@@ -14,9 +14,15 @@ import brand from '@/assets/brand.svg'
 import Socials from '@/components/Socials.vue'
 import { useWindowSize } from '@vueuse/core'
 import { useAuthStore } from './stores/auth'
+import { useAuth0 } from '@auth0/auth0-vue'
 
 const { width } = useWindowSize()
 const authStore = useAuthStore()
+const { loginWithRedirect } = useAuth0()
+
+function login() {
+  loginWithRedirect()
+}
 </script>
 
 <template>
@@ -73,13 +79,15 @@ const authStore = useAuthStore()
               <ul class="List one">
                 <li v-if="!authStore.token">
                   <NavigationMenuLink as-child>
-                    <router-link
+                    <button
                       class="ListItemLink"
-                      to="/login"
+                      aria-label="Login"
+                      aria-type="button"
+                      @click="login"
                     >
                       <div class="ListItemHeading">Login</div>
                       <p class="ListItemText">Login to the application if you already have an account.</p>
-                    </router-link>
+                    </button>
                   </NavigationMenuLink>
                 </li>
                 <li v-if="!authStore.token">
