@@ -12,6 +12,9 @@ export default defineConfig({
   define: {
     __VUE_APP_VERSION__: JSON.stringify(version)
   },
+  build: {
+    sourcemap: true
+  },
   plugins: [vue(), vueDevTools(), svgLoader()],
   resolve: {
     alias: {
