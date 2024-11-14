@@ -8,6 +8,8 @@ import { useBindersStore } from '@/stores/binders'
 import { useCardsStore } from '@/stores/cards'
 import { useRarityStore } from '@/stores/rarity'
 import { useAuthStore } from '@/stores/auth'
+import { useAuth0 } from '@auth0/auth0-vue'
+import { useRouter } from 'vue-router'
 import Loader from '@/components/Loader.vue'
 import DropDownCircle from '@/components/DropDownCircle.vue'
 import FiltersSidebar from '@/components/FiltersSidebar.vue'
@@ -21,8 +23,11 @@ const cardsStore = useCardsStore()
 const rarityStore = useRarityStore()
 const authStore = useAuthStore()
 const { width } = useWindowSize()
+const { isAuthenticated } = useAuth0()
+const router = useRouter()
 
 const loading = ref(true)
+const deleting = ref(false)
 const pageSizing = ref(9)
 const parsedContent = computed(() => {
   return DOMPurify.sanitize(marked(binderStore.currentBinder.description))
@@ -33,7 +38,7 @@ const backgroundStyle = computed(() => ({
   backgroundPosition: 'right'
 }))
 const canModify = computed(() => {
-  return binderStore.currentBinder.created_by === authStore.user.id
+  return binderStore.currentBinder.created_by === authStore.userId
 })
 
 function translateEdition(edition) {
@@ -82,6 +87,18 @@ function formatDate(date) {
   return format(new Date(date), 'MMM dd, yyyy')
 }
 
+async function removeBinder() {
+  if (!deleting.value) {
+    deleting.value = true
+    return
+  }
+
+  deleting.value = false
+  await binderStore.deleteBinder(binderStore.currentBinder.id)
+
+  return router.replace('/')
+}
+
 onMounted(async () => {
   if (width.value < 768) {
     pageSizing.value = 6
@@ -123,7 +140,7 @@ onMounted(async () => {
           <section class="binder-cards__info">
             <span class="bc--cntr">
               <vue-feather type="user" />
-              Created by: {{ binderStore.currentBinder.created_by || 'Unknown' }}
+              Created by: {{ binderStore.currentBinder.username || 'Unknown' }}
             </span>
           </section>
           <section class="binder-cards__dates">
@@ -175,7 +192,10 @@ onMounted(async () => {
               <vue-feather type="pie-chart" />
               See Stats
             </button>
-            <button class="btn btn__primary has-icon">
+            <button
+              v-if="isAuthenticated"
+              class="btn btn__primary has-icon"
+            >
               <vue-feather type="thumbs-up" />
               Like
             </button>
@@ -198,9 +218,14 @@ onMounted(async () => {
               <vue-feather type="plus-circle" />
               Add Cards
             </router-link>
-            <button class="btn btn__primary has-icon">
+            <button
+              @click="removeBinder"
+              class="btn btn__primary has-icon"
+              :class="deleting ? 'btn__danger' : ''"
+            >
               <vue-feather type="trash-2" />
-              Delete Binder
+              <span v-if="deleting">Are you sure?</span>
+              <span v-else> Delete Binder </span>
             </button>
           </section>
         </aside>

@@ -1,5 +1,6 @@
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
+import { useAuthDependencies } from '@/composables/auth'
 
 export const useBindersStore = defineStore('binders', () => {
   const binders = ref([])
@@ -41,9 +42,25 @@ export const useBindersStore = defineStore('binders', () => {
     currentBinder.value = await response.json()
   }
 
+  async function createBinder(binder) {
+    const { axios } = await useAuthDependencies()
+    const response = await axios.post('/api/binders/create', binder)
+
+    return response.data
+  }
+
+  async function deleteBinder(id) {
+    const { axios } = await useAuthDependencies()
+    const response = await axios.delete(`/api/binders/${id}`)
+
+    return response.data
+  }
+
   return {
     binders,
+    createBinder,
     currentBinder,
+    deleteBinder,
     retrieveBinders,
     retrieveRandomBinder,
     retrieveBinderById

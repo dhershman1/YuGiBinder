@@ -2,15 +2,23 @@ import { defineStore } from 'pinia'
 import { isBefore } from 'date-fns'
 import { ref } from 'vue'
 import { Auth0 } from '@/configs/auth'
+import { useAuthDependencies } from '@/composables/auth'
 
 export const useAuthStore = defineStore('auth', () => {
   const user = ref(null)
   const userId = ref(null)
+  const username = ref(null)
   const accessTokenExpiry = ref(null)
   const accessToken = ref(null)
 
   async function getProfile() {
+    const { axios } = await useAuthDependencies()
     const currentUser = Auth0.user.value
+
+    if (!username.value) {
+      const { data } = await axios.get('/api/username')
+      username.value = data.username
+    }
 
     if (currentUser) {
       userId.value = currentUser.sub
@@ -59,6 +67,7 @@ export const useAuthStore = defineStore('auth', () => {
     checkToken,
     getProfile,
     user,
-    userId
+    userId,
+    username
   }
 })

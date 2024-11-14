@@ -1,6 +1,7 @@
 <script setup>
 import { computed, onMounted, ref } from 'vue'
 import { useTagsStore } from '@/stores/tags'
+import { useBindersStore } from '@/stores/binders'
 import Loader from '@/components/Loader.vue'
 import SearchableDropdown from '@/components/Inputs/SearchableDropdown.vue'
 
@@ -11,6 +12,7 @@ const image = ref('')
 const loading = ref(true)
 
 const tagsStore = useTagsStore()
+const binderStore = useBindersStore()
 
 function handleTagSelect(tag) {
   chosenTags.value.push(tag)
@@ -28,7 +30,11 @@ onMounted(async () => {
 </script>
 
 <template>
-  <form v-if="!loading">
+  <form
+    class="create-form"
+    v-if="!loading"
+    @submit.prevent="binderStore.createBinder({ name, description, tags: chosenTags, thumbnail: image })"
+  >
     <div>
       <label for="name">Name:</label>
       <input
@@ -114,5 +120,22 @@ onMounted(async () => {
 
 .tag:hover {
   background-color: var(--secondary);
+}
+
+.create-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin: 1rem;
+}
+
+.form-control {
+  width: 100%;
+  padding: 0.5rem;
+  margin: 0.5rem 0;
+  border: 1px solid var(--white-dark);
+  background-color: var(--white);
+  color: var(--black);
+  border-radius: 0.25rem;
 }
 </style>
