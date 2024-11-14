@@ -33,7 +33,10 @@ onMounted(async () => {
   >
     <section class="binders">
       <h2>Recent Binders</h2>
-      <div class="card-container">
+      <div
+        v-if="binderStore.binders.length"
+        class="card-container"
+      >
         <card
           v-for="binder in binderStore.binders"
           :key="binder.id"
@@ -67,6 +70,12 @@ onMounted(async () => {
           </template>
         </card>
       </div>
+      <div
+        class="no-binders"
+        v-else
+      >
+        <p>No binders found.</p>
+      </div>
     </section>
     <separator class="separator__root" />
     <h2>Current Top 20 Cards</h2>
@@ -92,6 +101,12 @@ onMounted(async () => {
 <style scoped>
 .binders h2 {
   text-align: center;
+}
+
+.no-binders {
+  display: flex;
+  justify-content: center;
+  margin-top: 1rem;
 }
 
 .card__wrapper {
