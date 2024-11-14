@@ -32,11 +32,13 @@ function handleLogout() {
     }
   })
   authStore.user = null
+  authStore.userId = null
 }
 
 watch(user, (newUser) => {
   if (newUser !== undefined) {
     authStore.user = newUser
+    authStore.userId = newUser.sub
   } else {
     authStore.user = null
   }
