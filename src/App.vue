@@ -1,4 +1,5 @@
 <script setup>
+import { watch } from 'vue'
 import { RouterLink, RouterView } from 'vue-router'
 import {
   NavigationMenuContent,
@@ -18,11 +19,28 @@ import { useAuth0 } from '@auth0/auth0-vue'
 
 const { width } = useWindowSize()
 const authStore = useAuthStore()
-const { loginWithRedirect } = useAuth0()
+const { loginWithRedirect, logout, isAuthenticated, user } = useAuth0()
 
-function login() {
-  loginWithRedirect()
+async function login() {
+  await loginWithRedirect()
 }
+
+function handleLogout() {
+  logout({
+    logoutParams: {
+      returnTo: window.location.origin
+    }
+  })
+  authStore.user = null
+}
+
+watch(user, (newUser) => {
+  if (newUser !== undefined) {
+    authStore.user = newUser
+  } else {
+    authStore.user = null
+  }
+})
 </script>
 
 <template>
@@ -77,7 +95,7 @@ function login() {
             </NavigationMenuTrigger>
             <NavigationMenuContent class="NavigationMenuContent">
               <ul class="List one">
-                <li v-if="!authStore.token">
+                <li v-if="!isAuthenticated">
                   <NavigationMenuLink as-child>
                     <button
                       class="ListItemLink"
@@ -85,38 +103,27 @@ function login() {
                       aria-type="button"
                       @click="login"
                     >
-                      <div class="ListItemHeading">Login</div>
-                      <p class="ListItemText">Login to the application if you already have an account.</p>
+                      <div class="ListItemHeading">Login/Signup</div>
+                      <p class="ListItemText">Login or create an account for yugibinder.</p>
                     </button>
                   </NavigationMenuLink>
                 </li>
-                <li v-if="!authStore.token">
+                <li v-if="isAuthenticated">
                   <NavigationMenuLink as-child>
                     <router-link
                       class="ListItemLink"
-                      to="/register"
-                    >
-                      <div class="ListItemHeading">Register</div>
-                      <p class="ListItemText">Register a new account if you don't have one.</p>
-                    </router-link>
-                  </NavigationMenuLink>
-                </li>
-                <li v-if="authStore.token">
-                  <NavigationMenuLink as-child>
-                    <router-link
-                      class="ListItemLink"
-                      to="/register"
+                      to="/my-account"
                     >
                       <div class="ListItemHeading">My Account</div>
                       <p class="ListItemText">View your account</p>
                     </router-link>
                   </NavigationMenuLink>
                 </li>
-                <li v-if="authStore.token">
+                <li v-if="isAuthenticated">
                   <NavigationMenuLink as-child>
                     <span
                       class="ListItemLink"
-                      @click="authStore.logout"
+                      @click="handleLogout"
                     >
                       <div class="ListItemHeading">Logout</div>
                       <p class="ListItemText">Logout of the application</p>
@@ -158,7 +165,7 @@ function login() {
                     </a>
                   </NavigationMenuLink>
                 </li>
-                <li v-if="authStore.token && authStore.hasAccess('add:binder')">
+                <li v-if="isAuthenticated">
                   <NavigationMenuLink as-child>
                     <router-link
                       class="ListItemLink"
@@ -169,7 +176,7 @@ function login() {
                     </router-link>
                   </NavigationMenuLink>
                 </li>
-                <li v-if="authStore.token">
+                <li v-if="isAuthenticated">
                   <NavigationMenuLink as-child>
                     <router-link
                       class="ListItemLink"

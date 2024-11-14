@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import { usePaginationStore } from './pagination'
+import { useAuthDependencies } from '@/composables/auth'
 
 export const useCardsStore = defineStore('cards', () => {
   const pagination = usePaginationStore()
@@ -29,18 +30,18 @@ export const useCardsStore = defineStore('cards', () => {
   }
 
   async function retrieveTopCards() {
+    const { axios } = await useAuthDependencies()
+
     if (topCards.value.length > 0) {
       return topCards.value
     }
 
-    const response = await fetch('/api/cards/top', {
+    const { data } = await axios('/api/cards/top', {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json'
       }
     })
-
-    const data = await response.json()
 
     topCards.value = data
     return data

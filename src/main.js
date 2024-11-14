@@ -12,27 +12,19 @@ import 'vue-virtual-scroller/dist/vue-virtual-scroller.css'
 
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
-import { createAuth0 } from '@auth0/auth0-vue'
 import VueFeather from 'vue-feather'
 import { MotionPlugin } from '@vueuse/motion'
 
 import App from './App.vue'
 import router from './router'
+import { Auth0 } from './configs/auth'
 
 const app = createApp(App)
 
 app.component(VueFeather.name, VueFeather)
 app.use(createPinia())
-app.use(
-  createAuth0({
-    domain: import.meta.env.VITE_VUE_APP_AUTH0_DOMAIN,
-    clientId: import.meta.env.VITE_VUE_APP_AUTH0_CLIENT_ID,
-    authorizationParams: {
-      redirect_uri: window.location.origin
-    }
-  })
-)
 app.use(router)
 app.use(MotionPlugin)
+app.use(Auth0)
 
 app.mount('#app')

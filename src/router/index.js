@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
+import { authGuard } from '@auth0/auth0-vue'
 import { useAuthStore } from '@/stores/auth'
 
 const router = createRouter({
@@ -65,7 +66,8 @@ const router = createRouter({
     {
       path: '/binder/create',
       name: 'createBinder',
-      component: () => import('../views/CreateBinder.vue')
+      component: () => import('../views/CreateBinder.vue'),
+      beforeEnter: authGuard
     }
   ]
 })
