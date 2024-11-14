@@ -6,7 +6,7 @@ export const useAuthDependencies = async () => {
 
   const { accessToken } = await authStore.checkToken()
 
-  const axios = createAxiosAuthInstance(accessToken)()
+  const axios = createAxiosAuthInstance(accessToken)
 
   return { axios }
 }

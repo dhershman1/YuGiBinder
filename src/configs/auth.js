@@ -14,8 +14,8 @@ export const Auth0 = createAuth0({
   }
 })
 
-export const createAxiosAuthInstance = (accessToken) => (instance) => {
-  instance = instance || axios.create()
+export const createAxiosAuthInstance = (accessToken) => {
+  const instance = axios.create()
 
   instance.interceptors.request.use((config) => {
     Object.assign(config.headers, {
