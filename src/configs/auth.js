@@ -4,7 +4,7 @@ import axios from 'axios'
 export const Auth0 = createAuth0({
   domain: import.meta.env.VITE_VUE_APP_AUTH0_DOMAIN,
   clientId: import.meta.env.VITE_VUE_APP_AUTH0_CLIENT_ID,
-  useRefreshTokens: true,
+  // useRefreshTokens: true,
   cacheLocation: 'localstorage',
   authorizationParams: {
     // redirect_uri: `${window.location.origin}/callback`,
