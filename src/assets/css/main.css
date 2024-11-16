@@ -59,6 +59,10 @@ a {
   color: var(--accent);
 }
 
+a:hover {
+  color: var(--accent-dark);
+}
+
 footer {
   position: fixed;
   display: flex;

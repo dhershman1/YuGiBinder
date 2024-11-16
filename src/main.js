@@ -8,6 +8,7 @@ import './assets/css/select.css'
 import './assets/css/radix-nav.css'
 import './assets/css/radix-dialog.css'
 import './assets/css/tabs.css'
+import './assets/css/scrollarea.css'
 import 'vue-virtual-scroller/dist/vue-virtual-scroller.css'
 
 import { createApp } from 'vue'
