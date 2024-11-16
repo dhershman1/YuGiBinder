@@ -1,3 +1,4 @@
+import axiosNoAuth from 'axios'
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
 import { useAuthDependencies } from '@/composables/auth'
@@ -22,25 +23,33 @@ export const useBindersStore = defineStore('binders', () => {
 
   async function retrieveBinderById(id) {
     const url = `/api/binders/${id}`
-    const response = await fetch(url, {
+    const response = await axiosNoAuth(url, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json'
       }
     })
+    const apiResponse = response.data
 
-    currentBinder.value = await response.json()
+    if (apiResponse.error) {
+      if (apiResponse.error === 'Binder not found') {
+      }
+
+      return apiResponse
+    }
+
+    currentBinder.value = apiResponse
   }
 
   async function retrieveRandomBinder() {
-    const response = await fetch('/api/binders/random', {
+    const response = await axiosNoAuth('/api/binders/random', {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json'
       }
     })
 
-    currentBinder.value = await response.json()
+    currentBinder.value = response.data
   }
 
   async function createBinder(binder) {
@@ -58,20 +67,14 @@ export const useBindersStore = defineStore('binders', () => {
   }
 
   async function retrieveBinderThumbnails() {
-    const response = await fetch('/api/binders/thumbnails', {
+    const response = await axiosNoAuth('/api/binders/thumbnails', {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json'
       }
     })
 
-    const apiResponse = await response.json()
-
-    // thumbnails.value = Array.from({ length: 50 }, () => {
-    //   return apiResponse[0]
-    // })
-
-    thumbnails.value = apiResponse
+    thumbnails.value = response.data
 
     return thumbnails.value
   }
