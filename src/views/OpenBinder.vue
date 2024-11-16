@@ -135,7 +135,7 @@ onMounted(async () => {
       return router.replace('/')
     }
 
-    toastStore.addToast(error.message, 'error', 5000)
+    toastStore.addToast('Something went wrong, if the issue persists please open a issue about it!', 'error', 5000)
   } finally {
     loading.value = false
   }
