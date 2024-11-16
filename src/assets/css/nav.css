@@ -42,16 +42,6 @@ header {
   padding: 0 10px;
 }
 
-@media (prefers-color-scheme: light) {
-  header {
-    background-color: var(--black);
-  }
-
-  .nav-items a {
-    color: var(--warmgrey);
-  }
-}
-
 @media screen and (max-width: 768px) {
   .nav-menu {
     padding-top: 10px;
