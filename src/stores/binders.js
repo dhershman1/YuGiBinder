@@ -5,6 +5,7 @@ import { useAuthDependencies } from '@/composables/auth'
 export const useBindersStore = defineStore('binders', () => {
   const binders = ref([])
   const currentBinder = ref(null)
+  const thumbnails = ref([])
 
   async function retrieveBinders(params) {
     const queryString = new URLSearchParams(params).toString()
@@ -56,6 +57,25 @@ export const useBindersStore = defineStore('binders', () => {
     return response.data
   }
 
+  async function retrieveBinderThumbnails() {
+    const response = await fetch('/api/binders/thumbnails', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+
+    const apiResponse = await response.json()
+
+    // thumbnails.value = Array.from({ length: 50 }, () => {
+    //   return apiResponse[0]
+    // })
+
+    thumbnails.value = apiResponse
+
+    return thumbnails.value
+  }
+
   return {
     binders,
     createBinder,
@@ -63,6 +83,8 @@ export const useBindersStore = defineStore('binders', () => {
     deleteBinder,
     retrieveBinders,
     retrieveRandomBinder,
-    retrieveBinderById
+    retrieveBinderById,
+    retrieveBinderThumbnails,
+    thumbnails
   }
 })
