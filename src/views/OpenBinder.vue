@@ -4,12 +4,13 @@ import { useWindowSize } from '@vueuse/core'
 import { format } from 'date-fns'
 import DOMPurify from 'dompurify'
 import { marked } from 'marked'
+import { useAuth0 } from '@auth0/auth0-vue'
+import { useRouter } from 'vue-router'
 import { useBindersStore } from '@/stores/binders'
 import { useCardsStore } from '@/stores/cards'
 import { useRarityStore } from '@/stores/rarity'
 import { useAuthStore } from '@/stores/auth'
-import { useAuth0 } from '@auth0/auth0-vue'
-import { useRouter } from 'vue-router'
+import { useToastStore } from '@/stores/toasts'
 import Loader from '@/components/Loader.vue'
 import DropDownCircle from '@/components/DropDownCircle.vue'
 import FiltersSidebar from '@/components/FiltersSidebar.vue'
@@ -25,6 +26,7 @@ const authStore = useAuthStore()
 const { width } = useWindowSize()
 const { isAuthenticated } = useAuth0()
 const router = useRouter()
+const toastStore = useToastStore()
 
 const loading = ref(true)
 const deleting = ref(false)
@@ -107,27 +109,43 @@ onMounted(async () => {
   } else {
     pageSizing.value = 12
   }
-  if (props.isRandom) {
-    await binderStore.retrieveRandomBinder()
-    await cardsStore.retrieveCardsInBinder(binderStore.currentBinder.id, {
-      limit: pageSizing.value,
-      offset: 0
-    })
-  } else {
-    await binderStore.retrieveBinderById(props.id)
-    await cardsStore.retrieveCardsInBinder(props.id, {
-      limit: pageSizing.value,
-      offset: 0
-    })
+  try {
+    if (props.isRandom) {
+      await binderStore.retrieveRandomBinder()
+      if (!binderStore.currentBinder) {
+        return
+      }
+      await cardsStore.retrieveCardsInBinder(binderStore.currentBinder.id, {
+        limit: pageSizing.value,
+        offset: 0
+      })
+    } else {
+      await binderStore.retrieveBinderById(props.id)
+      if (!binderStore.currentBinder) {
+        return
+      }
+      await cardsStore.retrieveCardsInBinder(props.id, {
+        limit: pageSizing.value,
+        offset: 0
+      })
+    }
+  } catch (error) {
+    if (error.status === 404) {
+      toastStore.addToast('No Binders Found', 'error', 3000)
+      return router.replace('/')
+    }
+
+    toastStore.addToast(error.message, 'error', 5000)
+  } finally {
+    loading.value = false
   }
-  loading.value = false
 })
 </script>
 
 <template>
   <div
     class="binder-cards"
-    v-if="!loading"
+    v-if="!loading && binderStore.currentBinder"
   >
     <filters-sidebar />
     <section class="binder-cards__content">
