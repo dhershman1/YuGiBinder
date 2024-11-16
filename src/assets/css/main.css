@@ -14,6 +14,10 @@
   --warmgrey: hsl(0, 0%, 24%);
   --lightgrey: hsl(60, 3%, 93%);
   --timeline: hsl(0, 0%, 86%);
+  --success: hsl(120, 100%, 25%);
+  --warning: hsl(40, 100%, 45%);
+  --danger: hsl(0, 78%, 44%);
+  --info: hsl(200, 100%, 45%);
 
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;

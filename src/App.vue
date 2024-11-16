@@ -17,6 +17,8 @@ import { useWindowSize } from '@vueuse/core'
 import { useAuthStore } from './stores/auth'
 import { useAuth0 } from '@auth0/auth0-vue'
 
+import GlobalToast from './components/GlobalToast.vue'
+
 const { width } = useWindowSize()
 const authStore = useAuthStore()
 const { loginWithRedirect, logout, isAuthenticated, user } = useAuth0()
@@ -241,6 +243,7 @@ watch(user, (newUser) => {
     </section>
   </header>
   <main>
+    <global-toast />
     <RouterView />
   </main>
   <footer>
