@@ -65,9 +65,9 @@ const router = createRouter({
 router.beforeEach(async (to, from, next) => {
   const authStore = useAuthStore()
   // Redirect to login if not authenticated
-  if (to.name !== 'login' && !(await useAuthStore().checkToken())) {
-    return next({ name: 'login' })
-  }
+  // if (to.name !== 'login' && !(await useAuthStore().checkToken())) {
+  //   return next({ name: 'login' })
+  // }
 
   if (authStore.token) {
     await authStore.checkToken()
