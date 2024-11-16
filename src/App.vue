@@ -41,6 +41,7 @@ watch(user, (newUser) => {
     authStore.userId = newUser.sub
   } else {
     authStore.user = null
+    authStore.userId = null
   }
 })
 </script>
