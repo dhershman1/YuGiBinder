@@ -2,6 +2,7 @@ import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import { usePaginationStore } from './pagination'
 import { useAuthDependencies } from '@/composables/auth'
+import axiosNoAuth from 'axios'
 
 export const useCardsStore = defineStore('cards', () => {
   const pagination = usePaginationStore()
@@ -14,14 +15,12 @@ export const useCardsStore = defineStore('cards', () => {
     const queryString = new URLSearchParams(params).toString()
     const url = `/api/cards?${queryString}`
 
-    const response = await fetch(url, {
+    const { data } = await axiosNoAuth(url, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json'
       }
     })
-
-    const data = await response.json()
 
     cards.value = data.results
     pagination.setPaginationData(data.pagination)
@@ -30,13 +29,11 @@ export const useCardsStore = defineStore('cards', () => {
   }
 
   async function retrieveTopCards() {
-    const { axios } = await useAuthDependencies()
-
     if (topCards.value.length > 0) {
       return topCards.value
     }
 
-    const { data } = await axios('/api/cards/top', {
+    const { data } = await axiosNoAuth('/api/cards/top', {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json'
@@ -48,44 +45,39 @@ export const useCardsStore = defineStore('cards', () => {
   }
 
   async function retrieveRandomCard() {
-    const response = await fetch('/api/cards/random', {
+    const { data } = await axiosNoAuth('/api/cards/random', {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json'
       }
     })
-
-    const data = await response.json()
 
     currentCard.value = data
     return data
   }
 
   async function retrieveCardById(id) {
-    const response = await fetch(`/api/cards/${id}`, {
+    const { data } = await axiosNoAuth(`/api/cards/${id}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json'
       }
     })
-
-    const data = await response.json()
 
     currentCard.value = data
     return data
   }
 
   async function retrieveCardsInBinder(binderId, params) {
+    const { axios } = await useAuthDependencies()
     const queryString = new URLSearchParams(params).toString()
     const url = `/api/binders/${binderId}/cards?${queryString}`
-    const response = await fetch(url, {
+    const { data } = await axios(url, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json'
       }
     })
-
-    const data = await response.json()
 
     cardsInBinder.value = data
     return data
