@@ -30,6 +30,7 @@ const toastStore = useToastStore()
 
 const loading = ref(true)
 const deleting = ref(false)
+const showFullDescription = ref(false)
 const pageSizing = ref(9)
 const parsedContent = computed(() => {
   return DOMPurify.sanitize(marked(binderStore.currentBinder.description))
@@ -42,6 +43,10 @@ const backgroundStyle = computed(() => ({
 const canModify = computed(() => {
   return binderStore.currentBinder.created_by === authStore.userId
 })
+
+function toggleDescription() {
+  showFullDescription.value = !showFullDescription.value
+}
 
 function translateEdition(edition) {
   // This function is going to take edition and turn it into a simplified version
@@ -211,7 +216,7 @@ onMounted(async () => {
               See Stats
             </button>
             <button
-              v-if="isAuthenticated"
+              v-if="isAuthenticated && !canModify"
               class="btn btn__primary has-icon"
             >
               <vue-feather type="thumbs-up" />
@@ -242,16 +247,30 @@ onMounted(async () => {
               :class="deleting ? 'btn__danger' : ''"
             >
               <vue-feather type="trash-2" />
-              <span v-if="deleting">Are you sure?</span>
+              <span v-if="deleting"> Are you sure? </span>
               <span v-else> Delete Binder </span>
+            </button>
+            <button
+              v-if="deleting"
+              class="btn btn__primary"
+              @click="deleting = false"
+            >
+              Cancel
             </button>
           </section>
         </aside>
       </div>
-      <div
-        class="binder-cards__description"
-        v-html="parsedContent"
-      ></div>
+      <div class="binder-cards__description">
+        <div v-html="showFullDescription ? parsedContent : parsedContent.slice(0, 255) + '...'" />
+        <div class="text-center">
+          <button
+            @click="toggleDescription"
+            class="btn btn__default desc__btn"
+          >
+            {{ showFullDescription ? 'Read Less' : 'Read More' }}
+          </button>
+        </div>
+      </div>
       <div class="binder-cards__ygo-cards">
         <div
           v-for="card in cardsStore.cardsInBinder"
@@ -289,6 +308,11 @@ onMounted(async () => {
 </template>
 
 <style scoped>
+.desc__btn {
+  margin: auto;
+  margin-top: 1rem;
+}
+
 .binder-cards {
   margin-bottom: 2rem;
   display: grid;
