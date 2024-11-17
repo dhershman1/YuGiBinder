@@ -260,7 +260,10 @@ onMounted(async () => {
           </section>
         </aside>
       </div>
-      <div class="binder-cards__description">
+      <div
+        v-if="parsedContent"
+        class="binder-cards__description"
+      >
         <div v-html="showFullDescription ? parsedContent : parsedContent.slice(0, 255) + '...'" />
         <div class="text-center">
           <button
