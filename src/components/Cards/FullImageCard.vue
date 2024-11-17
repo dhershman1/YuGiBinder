@@ -1,7 +1,7 @@
 <script setup>
 defineProps({
   item: {
-    type: Array,
+    type: Object,
     required: true
   }
 })
