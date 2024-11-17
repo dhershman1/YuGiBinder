@@ -1,10 +1,11 @@
 <script setup>
 import { onMounted, ref } from 'vue'
 import { Separator } from 'radix-vue'
+import { formatDistanceToNow } from 'date-fns'
 import { useCardsStore } from '@/stores/cards'
 import { useBindersStore } from '@/stores/binders'
-import Card from '@/components/Card.vue'
 import Loader from '@/components/Loader.vue'
+import FullImageCard from '@/components/FullImageCard.vue'
 
 const cardsStore = useCardsStore()
 const binderStore = useBindersStore()
@@ -40,37 +41,44 @@ onMounted(async () => {
         class="card-container"
         :class="{ 'container--lg': binderStore.binders.length > 3 }"
       >
-        <card
+        <div
           v-for="binder in binderStore.binders"
           :key="binder.id"
+          class="full-img__card-container"
+          aria-label="Binder Card"
+          aria-role="link"
+          @click="() => $router.push(`/binders/${binder.id}`)"
         >
-          <template #main>
-            <div
-              @click="() => $router.push(`/binders/${binder.id}`)"
-              aria-role="button"
-              class="card__img"
-            >
-              <img
-                :alt="binder.name"
-                :src="binder.thumbnail"
-              />
-            </div>
-          </template>
-          <template #text>
-            <p>{{ binder.name }}</p>
-          </template>
-          <template #tags>
-            <div class="tags__container">
-              <span
-                v-for="tag in binder.tags"
-                :key="tag"
-                class="tag"
-              >
-                {{ tag }}
+          <full-image-card
+            v-motion-slide-left
+            :item="binder"
+          >
+            <template #stats>
+              <span>
+                <vue-feather
+                  type="eye"
+                  size="12"
+                />
+                {{ binder.views }}
               </span>
-            </div>
-          </template>
-        </card>
+              <span>
+                <vue-feather
+                  type="calendar"
+                  size="12"
+                />
+                {{ formatDistanceToNow(binder.created_at, { addSuffix: true }) }}
+              </span>
+              <div>
+                Created By
+                <vue-feather
+                  type="user"
+                  size="12"
+                />
+                {{ binder.username }}
+              </div>
+            </template>
+          </full-image-card>
+        </div>
       </div>
       <div
         class="no-binders"

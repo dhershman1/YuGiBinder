@@ -30,3 +30,24 @@
 .tag:active {
   background-color: var(--dark);
 }
+
+.tag__badge {
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.08);
+  padding: 2px 8px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.pill {
+  background-color: var(--secondary);
+  color: var(--white);
+  border-radius: 50rem;
+}
+
+.pill:first-child {
+  margin-left: 0.5rem;
+}
+
+.pill:last-child {
+  margin-right: 0.5rem;
+}
