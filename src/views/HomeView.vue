@@ -12,12 +12,14 @@ const loading = ref(true)
 
 onMounted(async () => {
   try {
-    await binderStore.retrieveBinders({
-      limit: 5,
-      sort: 'desc',
-      order: 'created_at'
-    })
-    await cardsStore.retrieveTopCards()
+    await Promise.all([
+      binderStore.retrieveBinders({
+        limit: 5,
+        sort: 'desc',
+        order: 'created_at'
+      }),
+      cardsStore.retrieveTopCards()
+    ])
   } catch (err) {
     console.error(err)
   } finally {
@@ -36,11 +38,11 @@ onMounted(async () => {
       <div
         v-if="binderStore.binders.length"
         class="card-container"
+        :class="{ 'container--lg': binderStore.binders.length > 3 }"
       >
         <card
           v-for="binder in binderStore.binders"
           :key="binder.id"
-          aria-role="link"
         >
           <template #main>
             <div
