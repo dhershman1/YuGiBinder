@@ -33,7 +33,7 @@ const toastStore = useToastStore()
   margin-bottom: 10px;
   padding: 10px 15px;
   border-radius: 5px;
-  color: white;
+  color: var(--white);
   font-weight: bold;
 }
 
