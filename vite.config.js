@@ -1,3 +1,4 @@
+import { sentryVitePlugin } from '@sentry/vite-plugin'
 import { fileURLToPath, URL } from 'node:url'
 
 import { defineConfig } from 'vite'
@@ -15,7 +16,15 @@ export default defineConfig({
   build: {
     sourcemap: true
   },
-  plugins: [vue(), vueDevTools(), svgLoader()],
+  plugins: [
+    vue(),
+    vueDevTools(),
+    svgLoader(),
+    sentryVitePlugin({
+      org: 'dustin-hershman',
+      project: 'yugibinder'
+    })
+  ],
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url))

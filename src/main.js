@@ -22,24 +22,35 @@ import router from './router'
 import { Auth0 } from './configs/auth'
 
 const app = createApp(App)
-
 app.component(VueFeather.name, VueFeather)
 app.use(createPinia())
 app.use(router)
 app.use(MotionPlugin)
 app.use(Auth0)
 
-Sentry.init({
-  app,
-  dsn: import.meta.env.VITE_SENTRY_DSN,
-  integrations: [Sentry.browserTracingIntegration({ router }), Sentry.replayIntegration()],
-  // Tracing
-  tracesSampleRate: 1.0, //  Capture 100% of the transactions
-  // Set 'tracePropagationTargets' to control for which URLs distributed tracing should be enabled
-  tracePropagationTargets: ['localhost'],
-  // Session Replay
-  replaysSessionSampleRate: 0.1, // This sets the sample rate at 10%. You may want to change it to 100% while in development and then sample at a lower rate in production.
-  replaysOnErrorSampleRate: 1.0 // If you're not already sampling the entire session, change the sample rate to 100% when sampling sessions where errors occur.
-})
+if (import.meta.env.VITE_APP_ENV !== 'development') {
+  Sentry.init({
+    app,
+    dsn: import.meta.env.VITE_SENTRY_DSN,
+    // eslint-disable-next-line no-undef
+    release: `yugibinder/${__VUE_APP_VERSION__}`,
+    environment: import.meta.env.VITE_APP_ENV,
+    ignoreErrors: ['Navigation cancelled', 'NavigationDuplicated', /(code 40[1,3])/gm],
+    integrations: [Sentry.browserTracingIntegration({ router }), Sentry.replayIntegration()],
+    beforeSend(event) {
+      // ignore error tracking for dev instances and only send for qa/staging/prod
+      if (event.environment && event.environment === 'development') return
+
+      return event
+    },
+    // Tracing
+    tracesSampleRate: 0.2, //  Capture 20% of the transactions
+    // Set 'tracePropagationTargets' to control for which URLs distributed tracing should be enabled
+    tracePropagationTargets: ['yugibinder.com'],
+    // Session Replay
+    replaysSessionSampleRate: 0.1, // This sets the sample rate at 10%. You may want to change it to 100% while in development and then sample at a lower rate in production.
+    replaysOnErrorSampleRate: 1.0 // If you're not already sampling the entire session, change the sample rate to 100% when sampling sessions where errors occur.
+  })
+}
 
 app.mount('#app')
