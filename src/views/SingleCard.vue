@@ -2,7 +2,7 @@
 import { onMounted, ref } from 'vue'
 import { useCardsStore } from '@/stores/cards'
 import Loader from '@/components/Loader.vue'
-import FloatingCard from '@/components/FloatingCard.vue'
+import FloatingCard from '@/components/Cards/FloatingCard.vue'
 
 const props = defineProps({
   cardId: String,

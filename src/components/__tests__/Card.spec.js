@@ -1,6 +1,6 @@
 import { mount } from '@vue/test-utils'
 import { describe, it, expect } from 'vitest'
-import Card from '../Card.vue'
+import Card from '../Cards/Card.vue'
 
 describe('Card.vue', () => {
   it('renders goToLink when passed', () => {

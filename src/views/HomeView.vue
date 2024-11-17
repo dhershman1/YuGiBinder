@@ -5,7 +5,7 @@ import { formatDistanceToNow } from 'date-fns'
 import { useCardsStore } from '@/stores/cards'
 import { useBindersStore } from '@/stores/binders'
 import Loader from '@/components/Loader.vue'
-import FullImageCard from '@/components/FullImageCard.vue'
+import FullImageCard from '@/components/Cards/FullImageCard.vue'
 
 const cardsStore = useCardsStore()
 const binderStore = useBindersStore()
