@@ -64,7 +64,7 @@ watch(user, (newUser) => {
       </div>
       <NavigationMenuRoot class="NavigationMenuRoot">
         <NavigationMenuList class="NavigationMenuList">
-          <NavigationMenuItem>
+          <NavigationMenuItem v-if="width > 768">
             <NavigationMenuLink
               class="NavigationMenuLink"
               as-child
@@ -244,7 +244,7 @@ watch(user, (newUser) => {
   </header>
   <main>
     <global-toast />
-    <RouterView />
+    <router-view />
   </main>
   <footer>
     <p>
