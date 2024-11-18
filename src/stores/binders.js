@@ -31,13 +31,6 @@ export const useBindersStore = defineStore('binders', () => {
     })
     const apiResponse = response.data
 
-    if (apiResponse.error) {
-      if (apiResponse.error === 'Binder not found') {
-      }
-
-      return apiResponse
-    }
-
     currentBinder.value = apiResponse
   }
 
