@@ -72,7 +72,16 @@ export const useBindersStore = defineStore('binders', () => {
     return thumbnails.value
   }
 
+  async function addCardToBinder(cardId) {
+    const { axios } = await useAuthDependencies()
+    const response = await axios.post(`/api/binders/${currentBinder.value.id}/card/${cardId}`)
+
+    console.log(response.data)
+    return response.data
+  }
+
   return {
+    addCardToBinder,
     binders,
     createBinder,
     currentBinder,
