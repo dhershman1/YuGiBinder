@@ -60,23 +60,3 @@ onUnmounted(() => {
     </div>
   </div>
 </template>
-
-<style scoped>
-.floating-container {
-  padding: 1.8rem;
-  width: 200px;
-  perspective: 2000px; /* Adds perspective for 3D effect */
-}
-
-.floating-card {
-  width: 100%;
-  height: 100%;
-  background-color: var(--accent);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 10px;
-  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
-  transition: transform 0.1s ease; /* Smooth transition for rotation */
-}
-</style>
