@@ -33,25 +33,27 @@ const toastStore = useToastStore()
   margin-bottom: 10px;
   padding: 10px 15px;
   border-radius: 5px;
-  color: var(--white);
+  color: var(--black);
   font-weight: bold;
+  background-color: var(--white);
+  border-top: 6px solid;
 }
 
 /* Toast Types */
 .toast.success {
-  background-color: var(--success);
+  border-color: var(--success);
 }
 
 .toast.error {
-  background-color: var(--danger);
+  border-color: var(--danger);
 }
 
 .toast.info {
-  background-color: var(--info);
+  border-color: var(--info);
 }
 
 .toast.warning {
-  background-color: var(--warning);
+  border-color: var(--warning);
 }
 
 /* Transition Animations */
