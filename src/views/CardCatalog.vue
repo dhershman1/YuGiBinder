@@ -4,15 +4,16 @@ import { Separator } from 'radix-vue'
 import { useCardsStore } from '@/stores/cards'
 import { usePaginationStore } from '@/stores/pagination'
 import { useBindersStore } from '@/stores/binders'
+import { useToastStore } from '@/stores/toasts'
 import Loader from '@/components/Loader.vue'
 import Card from '@/components/Cards/Card.vue'
 import Pagination from '@/components/Pagination.vue'
 import Toast from '@/components/Toast.vue'
-import AddCard from '@/components/Dialogs/AddCard.vue'
 
 const cardsStore = useCardsStore()
 const paginationStore = usePaginationStore()
 const bindersStore = useBindersStore()
+const toastStore = useToastStore()
 const loading = ref(true)
 const addingCard = ref(false)
 const openToast = ref(false)
@@ -28,18 +29,30 @@ async function fetchCards(page) {
     })
   } catch (error) {
     console.error(error)
+    toastStore.addToast('An error occurred while fetching cards', 'error')
   } finally {
     loading.value = false
   }
 }
 
-function addCardToBinder(card) {
-  console.log(card)
+async function addCardToBinder(card) {
+  if (!bindersStore.currentBinder) {
+    toastStore.addToast('Please select a binder first', 'warning')
+    return
+  }
+
   addingCard.value = true
-  setTimeout(() => {
-    addingCard.value = false
-    openToast.value = true
-  }, 2000)
+
+  // Make a request to add the card to the current binder
+  await bindersStore.addCardToBinder(card.id)
+
+  addingCard.value = false
+  openToast.value = true
+
+  // setTimeout(() => {
+  //   addingCard.value = false
+  //   openToast.value = true
+  // }, 2000)
 }
 
 onMounted(async () => {
@@ -75,28 +88,21 @@ onMounted(async () => {
           </template>
           <template #tags>
             <div class="btn__container">
-              <add-card
-                dialog-title="Add Card"
-                description="Add card to your binder"
-                @add="addCardToBinder(card)"
+              <button
+                title="Add to Binder"
+                class="btn btn__primary has-icon btn--sm"
+                @click="addCardToBinder(card)"
               >
-                <template #trigger>
-                  <button
-                    title="Add to Binder"
-                    class="btn btn__primary has-icon btn--sm"
-                  >
-                    <vue-feather
-                      v-if="addingCard"
-                      animation="spin"
-                      type="loader"
-                    />
-                    <vue-feather
-                      v-else
-                      type="plus-circle"
-                    />
-                  </button>
-                </template>
-              </add-card>
+                <vue-feather
+                  v-if="addingCard"
+                  animation="spin"
+                  type="loader"
+                />
+                <vue-feather
+                  v-else
+                  type="plus-circle"
+                />
+              </button>
             </div>
           </template>
         </card>
