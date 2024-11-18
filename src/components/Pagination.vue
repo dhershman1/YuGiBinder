@@ -1,4 +1,5 @@
 <script setup>
+import { computed } from 'vue'
 import {
   PaginationEllipsis,
   PaginationFirst,
@@ -9,71 +10,77 @@ import {
   PaginationPrev,
   PaginationRoot
 } from 'radix-vue'
+import { useWindowSize } from '@vueuse/core'
 import { usePaginationStore } from '@/stores/pagination'
 
 const paginationStore = usePaginationStore()
+const { width } = useWindowSize()
 
 const emits = defineEmits(['update:page'])
 defineProps({
   total: Number,
   defaultPage: Number
 })
+
+const siblingCount = computed(() => {
+  return width.value > 768 ? 1 : 0
+})
 </script>
 
 <template>
-  <PaginationRoot
+  <pagination-root
     :total="paginationStore.totalPages"
-    :sibling-count="1"
+    :sibling-count="siblingCount"
     show-edges
     :default-page="paginationStore.currentPage"
     @update:page="emits('update:page', $event)"
   >
-    <PaginationList
+    <pagination-list
       v-slot="{ items }"
-      class="PaginationList"
+      class="pagination__list"
     >
-      <PaginationFirst class="Button">
+      <pagination-first class="pagination__button">
         <vue-feather type="chevrons-left" />
-      </PaginationFirst>
-      <PaginationPrev
+      </pagination-first>
+      <pagination-prev
         :style="{ marginRight: 16 }"
-        class="Button"
+        class="pagination__button"
       >
         <vue-feather type="chevron-left" />
-      </PaginationPrev>
+      </pagination-prev>
       <template v-for="(page, index) in items">
-        <PaginationListItem
+        <pagination-list-item
           v-if="page.type === 'page'"
           :key="index"
-          class="Button"
+          class="pagination__button"
           :value="page.value"
         >
           {{ page.value }}
-        </PaginationListItem>
-        <PaginationEllipsis
+        </pagination-list-item>
+        <pagination-ellipsis
           v-else
           :key="page.type"
           :index="index"
-          class="PaginationEllipsis"
+          class="pagination__ellipsis"
         >
           &#8230;
-        </PaginationEllipsis>
+        </pagination-ellipsis>
       </template>
-      <PaginationNext
+      <pagination-next
         :style="{ marginLeft: 16 }"
-        class="Button"
+        class="pagination__button"
       >
         <vue-feather type="chevron-right" />
-      </PaginationNext>
-      <PaginationLast class="Button">
+      </pagination-next>
+      <pagination-last class="pagination__button">
         <vue-feather type="chevrons-right" />
-      </PaginationLast>
-    </PaginationList>
-  </PaginationRoot>
+      </pagination-last>
+    </pagination-list>
+  </pagination-root>
 </template>
 
 <style scoped>
-.Button {
+.pagination__button {
   text-align: center;
   font-size: 15px;
   line-height: 1;
@@ -86,20 +93,20 @@ defineProps({
   cursor: pointer;
 }
 
-.Button:disabled {
+.pagination__button:disabled {
   opacity: 0.5;
 }
 
-.Button:hover {
+.pagination__button:hover {
   background-color: rgb(255 255 255 / 0.1);
 }
 
-.Button[data-selected] {
+.pagination__button[data-selected] {
   background-color: var(--accent);
   color: var(--black-a11);
 }
 
-.PaginationEllipsis {
+.pagination__ellipsis {
   display: flex;
   height: 2.25rem;
   width: 2.25rem;
@@ -107,7 +114,7 @@ defineProps({
   justify-content: center;
 }
 
-.PaginationList {
+.pagination__list {
   display: flex;
   align-items: center;
   gap: 0.25rem;
