@@ -1,19 +1,17 @@
 <script setup>
-import { onMounted, ref, computed } from 'vue'
+import { onMounted, ref, computed, nextTick } from 'vue'
 import { useWindowSize } from '@vueuse/core'
-import { format } from 'date-fns'
 import DOMPurify from 'dompurify'
 import { marked } from 'marked'
-import { useAuth0 } from '@auth0/auth0-vue'
 import { useRouter } from 'vue-router'
 import { useBindersStore } from '@/stores/binders'
 import { useCardsStore } from '@/stores/cards'
 import { useRarityStore } from '@/stores/rarity'
-import { useAuthStore } from '@/stores/auth'
 import { useToastStore } from '@/stores/toasts'
 import Loader from '@/components/Loader.vue'
-import DropDownCircle from '@/components/DropDownCircle.vue'
 import FiltersSidebar from '@/components/FiltersSidebar.vue'
+import BinderPanel from '@/components/Panels/BinderPanel.vue'
+import ActionPanel from '@/components/Panels/ActionPanel.vue'
 
 const props = defineProps({
   id: String,
@@ -22,26 +20,24 @@ const props = defineProps({
 const binderStore = useBindersStore()
 const cardsStore = useCardsStore()
 const rarityStore = useRarityStore()
-const authStore = useAuthStore()
 const { width } = useWindowSize()
-const { isAuthenticated } = useAuth0()
+
 const router = useRouter()
 const toastStore = useToastStore()
 
 const loading = ref(true)
-const deleting = ref(false)
 const showFullDescription = ref(false)
 const pageSizing = ref(9)
+const showReadMore = ref(false)
 const parsedContent = computed(() => {
   return DOMPurify.sanitize(marked(binderStore.currentBinder.description))
 })
-const backgroundStyle = computed(() => ({
-  backgroundImage: `linear-gradient(to right, rgba(65, 68, 67, 0.8), rgba(65, 68, 67, 75%)), url(${binderStore.currentBinder.thumbnail})`,
-  backgroundSize: 'cover',
-  backgroundPosition: 'right'
-}))
-const canModify = computed(() => {
-  return binderStore.currentBinder.created_by === authStore.userId
+const description = computed(() => {
+  if (parsedContent.value.length < 255) {
+    return parsedContent.value
+  }
+
+  return showFullDescription.value ? parsedContent.value : parsedContent.value.slice(0, 255) + '...'
 })
 
 function toggleDescription() {
@@ -90,22 +86,6 @@ function getSpacingStyles(card) {
   }
 }
 
-function formatDate(date) {
-  return format(new Date(date), 'MMM dd, yyyy')
-}
-
-async function removeBinder() {
-  if (!deleting.value) {
-    deleting.value = true
-    return
-  }
-
-  deleting.value = false
-  await binderStore.deleteBinder(binderStore.currentBinder.id)
-
-  return router.replace('/')
-}
-
 onMounted(async () => {
   if (width.value < 768) {
     pageSizing.value = 6
@@ -114,6 +94,7 @@ onMounted(async () => {
   } else {
     pageSizing.value = 12
   }
+
   try {
     if (props.isRandom) {
       await binderStore.retrieveRandomBinder()
@@ -144,6 +125,13 @@ onMounted(async () => {
   } finally {
     loading.value = false
   }
+
+  await nextTick()
+  const descriptionElement = document.querySelector('.description-content')
+  console.log(descriptionElement)
+  if (descriptionElement && descriptionElement.scrollHeight > descriptionElement.clientHeight) {
+    showReadMore.value = true
+  }
 })
 </script>
 
@@ -152,120 +140,25 @@ onMounted(async () => {
     class="binder-cards"
     v-if="!loading && binderStore.currentBinder"
   >
-    <filters-sidebar />
+    <filters-sidebar class="sidebar" />
     <section class="binder-cards__content">
-      <div class="binder-cards__wrapper">
-        <aside
-          class="binder-cards__header"
-          :style="backgroundStyle"
-        >
-          <h1 class="binder-cards__name">{{ binderStore.currentBinder.name }}</h1>
-          <section class="binder-cards__info">
-            <span class="bc--cntr">
-              <vue-feather type="user" />
-              Created by: {{ binderStore.currentBinder.username || 'Unknown' }}
-            </span>
-          </section>
-          <section class="binder-cards__dates">
-            <span class="bc--cntr">
-              <vue-feather type="calendar" />
-              Created at: {{ formatDate(binderStore.currentBinder.created_at) }}
-            </span>
-            <span class="bc--cntr">
-              <vue-feather type="calendar" /> Last Updated at:
-              {{ formatDate(binderStore.currentBinder.updated_at) }}
-            </span>
-          </section>
-          <section class="binder-cards__metadata">
-            <span class="bc--cntr">
-              <vue-feather type="eye" />
-              {{ binderStore.currentBinder.views }} Views
-            </span>
-            <span
-              class="bc--cntr"
-              title="Cards in Binder"
-            >
-              <vue-feather type="layers" />
-              {{ cardsStore.cardsInBinder.length }}
-            </span>
-            <span
-              v-if="binderStore.currentBinder.tags.length < 4 && width > 768"
-              class="bc__tags__container"
-            >
-              <span
-                class="bc--cntr"
-                v-for="tag in binderStore.currentBinder.tags"
-                :key="tag"
-              >
-                <vue-feather type="tag" />
-                {{ tag }}
-              </span>
-            </span>
-            <drop-down-circle
-              v-else
-              :icon="'tag'"
-              :items="binderStore.currentBinder.tags"
-            />
-          </section>
-        </aside>
-        <aside class="binder-cards__action-panel">
-          <h1 class="binder-cards__name">Action Panel</h1>
-          <section class="bc--cntr">
-            <button class="btn btn__primary has-icon">
-              <vue-feather type="pie-chart" />
-              See Stats
-            </button>
-            <button
-              v-if="isAuthenticated && !canModify"
-              class="btn btn__primary has-icon"
-            >
-              <vue-feather type="thumbs-up" />
-              Like
-            </button>
-          </section>
-          <section
-            v-if="canModify"
-            class="bc--cntr"
-          >
-            <router-link
-              class="btn btn__primary has-icon"
-              :to="`/binders/${binderStore.currentBinder.id}/edit`"
-            >
-              <vue-feather type="edit" />
-              Edit Binder
-            </router-link>
-            <router-link
-              to="/card-catalog"
-              class="btn btn__primary has-icon"
-            >
-              <vue-feather type="plus-circle" />
-              Add Cards
-            </router-link>
-            <button
-              @click="removeBinder"
-              class="btn btn__primary has-icon"
-              :class="deleting ? 'btn__danger' : ''"
-            >
-              <vue-feather type="trash-2" />
-              <span v-if="deleting"> Are you sure? </span>
-              <span v-else> Delete Binder </span>
-            </button>
-            <button
-              v-if="deleting"
-              class="btn btn__primary"
-              @click="deleting = false"
-            >
-              Cancel
-            </button>
-          </section>
-        </aside>
+      <div class="panel__wrapper">
+        <binder-panel />
+        <action-panel />
       </div>
       <div
         v-if="parsedContent"
         class="binder-cards__description"
       >
-        <div v-html="showFullDescription ? parsedContent : parsedContent.slice(0, 255) + '...'" />
-        <div class="text-center">
+        <div
+          v-html="description"
+          class="description-content"
+          :class="{ 'show-full': showFullDescription }"
+        />
+        <div
+          v-if="showReadMore"
+          class="text-center"
+        >
           <button
             @click="toggleDescription"
             class="btn btn__default desc__btn"
@@ -323,58 +216,8 @@ onMounted(async () => {
   height: 100%;
 }
 
-.binder-cards__wrapper {
-  display: grid;
-  gap: 0.5rem;
-  grid-template-columns: 2fr 2fr;
-}
-
-.binder-cards__action-panel h1 {
-  max-height: 2.2rem;
-}
-
-.binder-cards__header,
-.binder-cards__action-panel {
-  background: transparent;
-  padding: 1rem;
-  border-radius: 5px;
-  box-shadow:
-    rgba(50, 50, 93, 0.25) 0px 13px 27px -5px,
-    rgba(0, 0, 0, 0.3) 0px 8px 16px -8px;
-  border: 1px solid var(--lightgrey);
-  margin-bottom: 1rem;
-  margin-top: 1rem;
-  display: grid;
-  grid-template-rows: 1fr 1fr;
-}
-
-.bc--cntr {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.binder-cards__info,
-.binder-cards__metadata,
-.binder-cards__dates {
-  display: flex;
-  gap: 1rem;
-  margin-top: 1rem;
-}
-
-.bc__tags__container {
-  display: flex;
-  gap: 1rem;
-}
-
-.binder-cards__info .center i,
-.binder-cards__metadata .center i {
-  margin-right: 0.5rem;
-}
-
-.binder-cards__name {
-  margin: 0;
-  font-size: 24px;
+.binder-cards__sidebar {
+  border-right: 1px solid var(--accent);
 }
 
 .binder-cards__description {
@@ -384,12 +227,18 @@ onMounted(async () => {
   box-shadow: 0 5px 5px -5px var(--shadow);
 }
 
-.binder-cards__content {
-  padding-left: 1rem;
+.description-content {
+  max-height: 100px; /* Set the initial max-height */
+  overflow: hidden;
+  transition: max-height 0.3s ease;
 }
 
-.binder-cards__sidebar {
-  border-right: 1px solid var(--accent);
+.description-content.show-full {
+  max-height: none; /* Remove the max-height to show full content */
+}
+
+.binder-cards__content {
+  padding-left: 1rem;
 }
 
 .binder-cards__ygo-cards {
@@ -615,12 +464,18 @@ onMounted(async () => {
 }
 
 @media screen and (max-width: 768px) {
-  .binder-cards {
-    margin-bottom: 0;
+  .sidebar {
+    display: none;
   }
 
-  .binder-cards__dates {
+  .binder-cards {
+    margin-bottom: 0;
+    display: flex;
     flex-direction: column;
+  }
+
+  .binder-cards__content {
+    padding-left: 0;
   }
 
   .binder-cards__ygo-cards {
@@ -630,14 +485,20 @@ onMounted(async () => {
   .corner-tag {
     font-size: 12px;
   }
+
   .edition-tag {
     left: 3rem;
     font-size: 12px;
   }
 
-  .binder-cards__wrapper {
-    display: grid;
-    grid-template-columns: 1fr;
+  .binder-cards__description {
+    max-width: fit-content;
+  }
+
+  .description-content {
+    word-wrap: break-word; /* Ensure long words break and wrap to the next line */
+    word-break: break-word; /* Ensure long words break and wrap to the next line */
+    white-space: normal; /* Allow normal wrapping of text */
   }
 }
 </style>
