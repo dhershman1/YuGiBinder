@@ -19,17 +19,17 @@ const emits = defineEmits(['add'])
 </script>
 
 <template>
-  <DialogRoot>
-    <DialogTrigger>
+  <dialog-root>
+    <dialog-trigger>
       <slot name="trigger" />
-    </DialogTrigger>
-    <DialogPortal>
-      <DialogOverlay class="DialogOverlay" />
-      <DialogContent class="DialogContent">
-        <DialogTitle class="DialogTitle"> {{ dialogTitle }} </DialogTitle>
-        <DialogDescription class="DialogDescription">
+    </dialog-trigger>
+    <dialog-portal>
+      <dialog-overlay class="DialogOverlay" />
+      <dialog-content class="DialogContent">
+        <dialog-title class="DialogTitle"> {{ dialogTitle }} </dialog-title>
+        <dialog-description class="DialogDescription">
           {{ description }}
-        </DialogDescription>
+        </dialog-description>
         <fieldset class="Fieldset">
           <label
             class="Label"
@@ -57,22 +57,22 @@ const emits = defineEmits(['add'])
           />
         </fieldset>
         <div :style="{ display: 'flex', marginTop: 25, justifyContent: 'flex-end' }">
-          <DialogClose as-child>
+          <dialog-close as-child>
             <button
               @click="emits('add')"
               class="btn btn__primary"
             >
               Add
             </button>
-          </DialogClose>
+          </dialog-close>
         </div>
-        <DialogClose
+        <dialog-close
           class="IconButton"
           aria-label="Close"
         >
           <vue-feather type="x" />
-        </DialogClose>
-      </DialogContent>
-    </DialogPortal>
-  </DialogRoot>
+        </dialog-close>
+      </dialog-content>
+    </dialog-portal>
+  </dialog-root>
 </template>
