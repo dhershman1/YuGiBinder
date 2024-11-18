@@ -35,10 +35,10 @@ function formatDate(date) {
     <section class="panel__dates">
       <span class="panel--cntr">
         <vue-feather type="calendar" />
-        Created at: {{ formatDate(binderStore.currentBinder.created_at) }}
+        Created: {{ formatDate(binderStore.currentBinder.created_at) }}
       </span>
       <span class="panel--cntr">
-        <vue-feather type="calendar" /> Last Updated at:
+        <vue-feather type="calendar" /> Last Updated:
         {{ formatDate(binderStore.currentBinder.updated_at) }}
       </span>
     </section>
