@@ -1,6 +1,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { Separator } from 'radix-vue'
+import { useWindowSize } from '@vueuse/core'
 import { useCardsStore } from '@/stores/cards'
 import { usePaginationStore } from '@/stores/pagination'
 import { useBindersStore } from '@/stores/binders'
@@ -9,22 +10,32 @@ import Loader from '@/components/Loader.vue'
 import Card from '@/components/Cards/Card.vue'
 import Pagination from '@/components/Pagination.vue'
 import Toast from '@/components/Toast.vue'
+import { computed } from 'vue'
 
 const cardsStore = useCardsStore()
 const paginationStore = usePaginationStore()
 const bindersStore = useBindersStore()
 const toastStore = useToastStore()
+const { width } = useWindowSize()
 const loading = ref(true)
 const addingCard = ref(false)
 const openToast = ref(false)
-const limit = 10
+const limit = computed(() => {
+  if (width.value > 1224) {
+    return 10
+  } else if (width.value > 768) {
+    return 8
+  } else {
+    return 6
+  }
+})
 
 async function fetchCards(page) {
   loading.value = true
   try {
-    const offset = (page - 1) * limit
+    const offset = (page - 1) * limit.value
     await cardsStore.retrieveCards({
-      limit,
+      limit: limit.value,
       offset
     })
   } catch (error) {
@@ -48,11 +59,6 @@ async function addCardToBinder(card) {
 
   addingCard.value = false
   openToast.value = true
-
-  // setTimeout(() => {
-  //   addingCard.value = false
-  //   openToast.value = true
-  // }, 2000)
 }
 
 onMounted(async () => {
@@ -162,9 +168,23 @@ onMounted(async () => {
   max-width: 300px;
 }
 
+@media screen and (max-width: 1224px) {
+  .container--lg {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(200px, 1fr));
+    gap: 1rem;
+  }
+}
+
 @media screen and (max-width: 768px) {
   .card-catalog {
     margin-bottom: 0;
+  }
+
+  .container--lg {
+    display: grid;
+    grid-template-columns: repeat(1, minmax(200px, 1fr));
+    gap: 1rem;
   }
 }
 </style>
