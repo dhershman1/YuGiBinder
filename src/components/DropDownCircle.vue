@@ -1,6 +1,7 @@
 <script setup>
 import { ref } from 'vue'
 import {
+  DropdownMenuArrow,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuPortal,
@@ -46,6 +47,7 @@ const toggleState = ref(false)
         >
           {{ item }}
         </dropdown-menu-item>
+        <dropdown-menu-arrow class="DropdownMenuArrow" />
       </dropdown-menu-content>
     </dropdown-menu-portal>
   </dropdown-menu-root>
@@ -54,7 +56,7 @@ const toggleState = ref(false)
 <style scoped>
 :deep(.DropdownMenuContent),
 .DropdownMenuSubContent {
-  min-width: 220px;
+  min-width: 200px;
   background-color: var(--white);
   border-radius: 6px;
   padding: 5px;
@@ -80,6 +82,10 @@ const toggleState = ref(false)
 :deep(.DropdownMenuContent)[data-side='left'],
 .DropdownMenuSubContent[data-side='left'] {
   animation-name: slideRightAndFade;
+}
+
+:deep(.DropdownMenuArrow) {
+  fill: var(--white);
 }
 
 .DropdownMenuItem,
@@ -114,7 +120,7 @@ const toggleState = ref(false)
 .DropdownMenuCheckboxItem[data-highlighted],
 .DropdownMenuRadioItem[data-highlighted],
 .DropdownMenuSubTrigger[data-highlighted] {
-  background-color: var(--secondary);
+  background-color: var(--shadow);
   color: var(--black);
 }
 
@@ -158,7 +164,7 @@ const toggleState = ref(false)
   transition: all 0.1s ease;
 }
 .IconButton:hover {
-  background-color: var(--secondary);
+  background-color: var(--accent);
 }
 .IconButton:focus {
   box-shadow: 0 0 0 2px var(--accent);
