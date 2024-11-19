@@ -43,6 +43,7 @@
 }
 
 .btn__primary:not(:disabled):hover {
+  color: var(--lightgrey);
   background-color: var(--accent-dark);
 }
 
