@@ -1,6 +1,7 @@
 <script setup>
-import { ref, onMounted } from 'vue'
+import { computed, ref, onMounted } from 'vue'
 import { Separator } from 'radix-vue'
+import { useAuth0 } from '@auth0/auth0-vue'
 import { useWindowSize } from '@vueuse/core'
 import { useCardsStore } from '@/stores/cards'
 import { usePaginationStore } from '@/stores/pagination'
@@ -10,7 +11,6 @@ import Loader from '@/components/Loader.vue'
 import Card from '@/components/Cards/Card.vue'
 import Pagination from '@/components/Pagination.vue'
 import Toast from '@/components/Toast.vue'
-import { computed } from 'vue'
 
 const cardsStore = useCardsStore()
 const paginationStore = usePaginationStore()
@@ -20,6 +20,7 @@ const { width } = useWindowSize()
 const loading = ref(true)
 const addingCard = ref(false)
 const openToast = ref(false)
+const { isAuthenticated } = useAuth0()
 const limit = computed(() => {
   if (width.value > 1224) {
     return 10
@@ -62,8 +63,11 @@ async function addCardToBinder(card) {
 }
 
 onMounted(async () => {
-  // Make a request to retrieve all the users binders
-  await Promise.all([fetchCards(paginationStore.currentPage), bindersStore.retrieveUsersBinders()])
+  fetchCards(paginationStore.currentPage)
+  // Make a request to retrieve all the users binders only if they're authenticated
+  if (isAuthenticated.value) {
+    await bindersStore.retrieveUsersBinders()
+  }
 })
 </script>
 
@@ -71,7 +75,10 @@ onMounted(async () => {
   <div v-if="!loading">
     <h1>Card Catalog</h1>
     <div class="card-catalog">
-      <section class="card-catalog__action-panel">
+      <section
+        v-if="isAuthenticated"
+        class="card-catalog__action-panel"
+      >
         Current Binder: {{ bindersStore.currentBinder?.name || 'None' }}
         <select v-model="bindersStore.currentBinder">
           <option value="">Select a Binder</option>
