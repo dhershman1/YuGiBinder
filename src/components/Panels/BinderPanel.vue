@@ -55,7 +55,7 @@ function formatDate(date) {
         {{ cardsStore.cardsInBinder.length }}
       </span>
       <span
-        v-if="binderStore.currentBinder.tags.length < 4 && width > 768"
+        v-if="binderStore.currentBinder.tags.length < 3 && width > 768"
         class="panel__tags__container"
       >
         <span

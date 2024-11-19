@@ -24,20 +24,20 @@ const toggleState = ref(false)
 </script>
 
 <template>
-  <DropdownMenuRoot v-model:open="toggleState">
-    <DropdownMenuTrigger
+  <dropdown-menu-root v-model:open="toggleState">
+    <dropdown-menu-trigger
       class="IconButton"
       aria-label="View Tags"
     >
       <vue-feather :type="icon" />
-    </DropdownMenuTrigger>
+    </dropdown-menu-trigger>
 
-    <DropdownMenuPortal>
-      <DropdownMenuContent
+    <dropdown-menu-portal>
+      <dropdown-menu-content
         class="DropdownMenuContent"
         :side-offset="5"
       >
-        <DropdownMenuItem
+        <dropdown-menu-item
           v-for="item in items"
           :key="item"
           :value="item"
@@ -45,10 +45,10 @@ const toggleState = ref(false)
           @click="emit('click', item)"
         >
           {{ item }}
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenuPortal>
-  </DropdownMenuRoot>
+        </dropdown-menu-item>
+      </dropdown-menu-content>
+    </dropdown-menu-portal>
+  </dropdown-menu-root>
 </template>
 
 <style scoped>
@@ -161,7 +161,7 @@ const toggleState = ref(false)
   background-color: var(--secondary);
 }
 .IconButton:focus {
-  box-shadow: 0 0 0 2px black;
+  box-shadow: 0 0 0 2px var(--accent);
 }
 
 .RightSlot {
