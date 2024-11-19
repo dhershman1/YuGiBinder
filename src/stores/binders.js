@@ -7,6 +7,16 @@ export const useBindersStore = defineStore('binders', () => {
   const binders = ref([])
   const currentBinder = ref(null)
   const thumbnails = ref([])
+  const currentUsersBinders = ref([])
+
+  async function retrieveUsersBinders() {
+    const { axios } = await useAuthDependencies()
+    const response = await axios.get('/api/binders/mine')
+
+    currentUsersBinders.value = response.data
+
+    return currentUsersBinders.value
+  }
 
   async function retrieveBinders(params) {
     const queryString = new URLSearchParams(params).toString()
@@ -85,11 +95,13 @@ export const useBindersStore = defineStore('binders', () => {
     binders,
     createBinder,
     currentBinder,
+    currentUsersBinders,
     deleteBinder,
     retrieveBinders,
     retrieveRandomBinder,
     retrieveBinderById,
     retrieveBinderThumbnails,
+    retrieveUsersBinders,
     thumbnails
   }
 })

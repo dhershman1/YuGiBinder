@@ -62,8 +62,8 @@ async function addCardToBinder(card) {
 }
 
 onMounted(async () => {
-  fetchCards(paginationStore.currentPage)
   // Make a request to retrieve all the users binders
+  await Promise.all([fetchCards(paginationStore.currentPage), bindersStore.retrieveUsersBinders()])
 })
 </script>
 
@@ -71,7 +71,19 @@ onMounted(async () => {
   <div v-if="!loading">
     <h1>Card Catalog</h1>
     <div class="card-catalog">
-      <section class="card-catalog__action-panel"></section>
+      <section class="card-catalog__action-panel">
+        Current Binder: {{ bindersStore.currentBinder?.name || 'None' }}
+        <select v-model="bindersStore.currentBinder">
+          <option value="">Select a Binder</option>
+          <option
+            v-for="binder in bindersStore.currentUsersBinders"
+            :key="binder.id"
+            :value="binder"
+          >
+            {{ binder.name }}
+          </option>
+        </select>
+      </section>
       <separator class="separator__root" />
       <div class="pagination-container pagiantion--first">
         <pagination @update:page="fetchCards" />
