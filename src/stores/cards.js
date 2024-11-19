@@ -69,10 +69,9 @@ export const useCardsStore = defineStore('cards', () => {
   }
 
   async function retrieveCardsInBinder(binderId, params) {
-    const { axios } = await useAuthDependencies()
     const queryString = new URLSearchParams(params).toString()
     const url = `/api/binders/${binderId}/cards?${queryString}`
-    const { data } = await axios(url, {
+    const { data } = await axiosNoAuth(url, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json'
