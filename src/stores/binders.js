@@ -4,9 +4,13 @@ import { defineStore } from 'pinia'
 import { useAuthDependencies } from '@/composables/auth'
 
 export const useBindersStore = defineStore('binders', () => {
+  // A collection of binders to show on the page
   const binders = ref([])
+  // The current binder that is being viewed
   const currentBinder = ref(null)
+  // All of the thumbnails for binders
   const thumbnails = ref([])
+  // All of the binders that belong to the current user
   const currentUsersBinders = ref([])
 
   async function retrieveUsersBinders() {
@@ -55,6 +59,19 @@ export const useBindersStore = defineStore('binders', () => {
     currentBinder.value = response.data
   }
 
+  async function retrieveBinderThumbnails() {
+    const response = await axiosNoAuth('/api/thumbnails', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+
+    thumbnails.value = response.data
+
+    return thumbnails.value
+  }
+
   async function createBinder(binder) {
     const { axios } = await useAuthDependencies()
     const response = await axios.post('/api/binders/create', binder)
@@ -69,24 +86,17 @@ export const useBindersStore = defineStore('binders', () => {
     return response.data
   }
 
-  async function retrieveBinderThumbnails() {
-    const response = await axiosNoAuth('/api/binders/thumbnails', {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    })
-
-    thumbnails.value = response.data
-
-    return thumbnails.value
-  }
-
   async function addCardToBinder(cardId) {
     const { axios } = await useAuthDependencies()
     const response = await axios.post(`/api/binders/${currentBinder.value.id}/card/${cardId}`)
 
-    console.log(response.data)
+    return response.data
+  }
+
+  async function updateBinder() {
+    const { axios } = await useAuthDependencies()
+    const response = await axios.put(`/api/binders/${currentBinder.value.id}`, currentBinder.value)
+
     return response.data
   }
 
@@ -102,6 +112,7 @@ export const useBindersStore = defineStore('binders', () => {
     retrieveBinderById,
     retrieveBinderThumbnails,
     retrieveUsersBinders,
-    thumbnails
+    thumbnails,
+    updateBinder
   }
 })
