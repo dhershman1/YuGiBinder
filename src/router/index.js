@@ -58,6 +58,18 @@ const router = createRouter({
       name: 'createBinder',
       component: () => import('../views/CreateBinder.vue'),
       beforeEnter: authGuard
+    },
+    {
+      path: '/binder/:binderId/edit',
+      name: 'editBinder',
+      component: () => import('../views/CreateBinder.vue'),
+      props: true,
+      beforeEnter: authGuard
+    },
+    {
+      path: '/:pathMatch(.*)*',
+      name: 'NotFound',
+      component: () => import('../views/NotFound.vue')
     }
   ]
 })
