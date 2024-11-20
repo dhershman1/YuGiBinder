@@ -8,12 +8,12 @@ const router = createRouter({
   routes: [
     {
       path: '/',
-      name: 'home',
+      name: 'Home',
       component: HomeView
     },
     {
       path: '/about',
-      name: 'about',
+      name: 'About',
       // route level code-splitting
       // this generates a separate chunk (About.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
@@ -21,49 +21,49 @@ const router = createRouter({
     },
     {
       path: '/binders',
-      name: 'binders',
+      name: 'Binders',
       component: () => import('../views/BindersView.vue')
     },
     {
       path: '/binder/random',
-      name: 'randomBinder',
+      name: 'RandomBinder',
       component: () => import('../views/OpenBinder.vue'),
       props: { isRandom: true }
     },
     {
       path: '/binders/:id',
-      name: 'openBinder',
+      name: 'OpenBinder',
       component: () => import('../views/OpenBinder.vue'),
       props: true
     },
     {
       path: '/card/random',
-      name: 'randomCard',
+      name: 'RandomCard',
       component: () => import('../views/SingleCard.vue'),
       props: { isRandom: true }
     },
     {
       path: '/cards/:cardId',
-      name: 'card',
+      name: 'Card',
       component: () => import('../views/SingleCard.vue'),
       props: true
     },
     {
       path: '/card-catalog',
-      name: 'cardCatalog',
+      name: 'CardCatalog',
       component: () => import('../views/CardCatalog.vue')
     },
     {
       path: '/binder/create',
-      name: 'createBinder',
+      name: 'CreateBinder',
       component: () => import('../views/CreateBinder.vue'),
       beforeEnter: authGuard
     },
     {
-      path: '/binder/:binderId/edit',
-      name: 'editBinder',
+      path: '/binders/:binderId/edit',
+      name: 'EditBinder',
       component: () => import('../views/CreateBinder.vue'),
-      props: true,
+      props: (route) => ({ isEditing: true, binderId: route.params.binderId }),
       beforeEnter: authGuard
     },
     {
