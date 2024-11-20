@@ -8,8 +8,6 @@ export const useBindersStore = defineStore('binders', () => {
   const binders = ref([])
   // The current binder that is being viewed
   const currentBinder = ref(null)
-  // All of the thumbnails for binders
-  const thumbnails = ref([])
   // All of the binders that belong to the current user
   const currentUsersBinders = ref([])
 
@@ -35,17 +33,22 @@ export const useBindersStore = defineStore('binders', () => {
     binders.value = await response.json()
   }
 
-  async function retrieveBinderById(id) {
+  async function retrieveBinderById(id, full = 'no') {
     const url = `/api/binders/${id}`
     const response = await axiosNoAuth(url, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json'
+      },
+      params: {
+        full
       }
     })
     const apiResponse = response.data
 
     currentBinder.value = apiResponse
+
+    return apiResponse
   }
 
   async function retrieveRandomBinder() {
@@ -57,19 +60,6 @@ export const useBindersStore = defineStore('binders', () => {
     })
 
     currentBinder.value = response.data
-  }
-
-  async function retrieveBinderThumbnails() {
-    const response = await axiosNoAuth('/api/thumbnails', {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    })
-
-    thumbnails.value = response.data
-
-    return thumbnails.value
   }
 
   async function createBinder(binder) {
@@ -110,9 +100,7 @@ export const useBindersStore = defineStore('binders', () => {
     retrieveBinders,
     retrieveRandomBinder,
     retrieveBinderById,
-    retrieveBinderThumbnails,
     retrieveUsersBinders,
-    thumbnails,
     updateBinder
   }
 })
