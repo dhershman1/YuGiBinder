@@ -10,7 +10,7 @@ const binderStore = useBindersStore()
 const cardsStore = useCardsStore()
 const { width } = useWindowSize()
 const backgroundStyle = computed(() => ({
-  backgroundImage: `linear-gradient(to right, rgba(65, 68, 67, 0.8), rgba(65, 68, 67, 75%)), url(${binderStore.currentBinder.thumbnail})`,
+  backgroundImage: `linear-gradient(to right, rgba(65, 68, 67, 0.8), rgba(65, 68, 67, 75%)), url(${binderStore.currentBinder.thumbnail.url})`,
   backgroundSize: 'cover',
   backgroundPosition: 'right'
 }))
