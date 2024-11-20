@@ -10,7 +10,7 @@ defineProps({
 <template>
   <div
     class="full-img__card"
-    :style="{ 'background-image': `url(${item.thumbnail})` }"
+    :style="{ 'background-image': `url(${item.thumbnail.url})` }"
   >
     <div
       class="full-img__card__content"
