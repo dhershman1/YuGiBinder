@@ -70,7 +70,7 @@ function closeOverlay() {
   }
 }
 
-@media screen and (max-width: 1224px) {
+@media screen and (max-width: 1440px) {
   .selected-card {
     width: 400px;
   }
