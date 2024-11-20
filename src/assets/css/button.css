@@ -47,13 +47,22 @@
   background-color: var(--accent-dark);
 }
 
+.btn__secondary {
+  color: var(--warmgrey);
+  background-color: var(--grey-bg);
+}
+
+.btn__secondary:not(:disabled):hover {
+  background-color: var(--grey-hover);
+}
+
 .btn__danger {
-  color: var(--white);
-  background-color: var(--dark-secondary);
+  color: var(--danger);
+  background-color: var(--danger-bg);
 }
 
 .btn__danger:not(:disabled):hover {
-  background-color: var(--secondary);
+  background-color: var(--danger-hover);
 }
 
 .btn__default {
