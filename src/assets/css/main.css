@@ -4,6 +4,7 @@
   --jet: hsl(120, 1%, 17%);
   --black: hsl(0, 0%, 11%);
   --bg: hsl(160, 2%, 26%);
+  --overlay: hsla(0, 0%, 0%, 0.7);
   --dark: hsl(208, 37%, 20%);
   --secondary: hsl(0, 100%, 69%);
   --dark-secondary: hsl(8, 49%, 51%);
@@ -12,11 +13,15 @@
   --shadow: hsla(0, 0%, 0%, 0.13);
   --slategrey: hsl(0, 0%, 17%);
   --warmgrey: hsl(0, 0%, 24%);
+  --grey-bg: hsl(276, 12%, 92%);
+  --grey-hover: hsl(274, 12%, 89%);
   --lightgrey: hsl(60, 3%, 93%);
   --timeline: hsl(0, 0%, 86%);
   --success: hsl(120, 100%, 25%);
   --warning: hsl(40, 100%, 45%);
   --danger: hsl(0, 78%, 44%);
+  --danger-bg: hsl(358, 100%, 93%);
+  --danger-hover: hsl(359, 100%, 90%);
   --info: hsl(200, 100%, 45%);
 
   --w1: 25%;
