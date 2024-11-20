@@ -152,7 +152,7 @@ onMounted(async () => {
     <section class="binder-cards__content">
       <div class="panel__wrapper">
         <binder-panel />
-        <action-panel />
+        <action-panel @deleting="loading = true" />
       </div>
       <div
         v-if="parsedContent"
@@ -473,9 +473,6 @@ onMounted(async () => {
 .corner-tag .rarity {
   display: inline-block;
   transform-origin: left top;
-}
-
-@media screen and (max-width: 1224px) {
 }
 
 @media screen and (max-width: 768px) {
