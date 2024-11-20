@@ -4,25 +4,24 @@ import { useAuth0 } from '@auth0/auth0-vue'
 import { useRouter } from 'vue-router'
 import { useBindersStore } from '@/stores/binders'
 import { useAuthStore } from '@/stores/auth'
+import { useToastStore } from '@/stores/toasts'
+import Confirmation from '@/components/Dialogs/Confirmation.vue'
 
+const emits = defineEmits(['deleting'])
 const binderStore = useBindersStore()
 const authStore = useAuthStore()
+const toast = useToastStore()
 const { isAuthenticated } = useAuth0()
 const router = useRouter()
 const canModify = computed(() => {
   return binderStore.currentBinder.created_by === authStore.userId
 })
-const deleting = ref(false)
 
 async function removeBinder() {
-  if (!deleting.value) {
-    deleting.value = true
-    return
-  }
-
-  deleting.value = false
+  emits('deleting')
   await binderStore.deleteBinder(binderStore.currentBinder.id)
 
+  toast.addToast('Binder Deleted Successfully', 'success')
   return router.replace('/')
 }
 </script>
@@ -61,22 +60,15 @@ async function removeBinder() {
         <vue-feather type="plus-circle" />
         Add Cards
       </router-link>
-      <button
-        @click="removeBinder"
-        class="btn btn__primary has-icon"
-        :class="deleting ? 'btn__danger' : ''"
-      >
-        <vue-feather type="trash-2" />
-        <span v-if="deleting"> Are you sure? </span>
-        <span v-else> Delete Binder </span>
-      </button>
-      <button
-        v-if="deleting"
-        class="btn btn__primary"
-        @click="deleting = false"
-      >
-        Cancel
-      </button>
+      <confirmation @confirm="removeBinder">
+        <template #trigger>
+          <button class="btn btn__primary has-icon">
+            <vue-feather type="trash-2" />
+            <span>Delete Binder</span>
+          </button>
+        </template>
+        <template #action> Confirm, Delete Binder </template>
+      </confirmation>
     </section>
   </aside>
 </template>
