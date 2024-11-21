@@ -27,6 +27,8 @@ import CardStack from '@/components/CardStack.vue'
 .not-found {
   display: grid;
   grid-template-columns: 2fr 3fr;
+  height: 100vh;
+  overflow: hidden;
 }
 
 .content {
