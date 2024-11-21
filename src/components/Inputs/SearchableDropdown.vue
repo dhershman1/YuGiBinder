@@ -5,7 +5,8 @@ import { useDebounceFn } from '@vueuse/core'
 import { useClickOutside } from '@/composables/useClickOutside'
 
 const props = defineProps({
-  tags: Array
+  tags: Array,
+  disabled: Boolean
 })
 const emits = defineEmits(['select'])
 
@@ -119,11 +120,12 @@ onUnmounted(() => {
       :aria-expanded="dropdownOpen"
       :aria-activedescendant="highlightedIndex !== -1 ? `dropdown-item-${highlightedIndex}` : null"
       class="search-input"
+      :disabled="disabled"
     />
 
     <!-- Dropdown Content with Virtual Scroller -->
     <div
-      v-if="dropdownOpen"
+      v-if="dropdownOpen && !disabled"
       class="dropdown-content"
       role="listbox"
       :aria-labelledby="dropdownId"
@@ -171,6 +173,12 @@ onUnmounted(() => {
   font-size: 16px;
   border: 1px solid var(--white-dark);
   border-radius: 4px;
+}
+
+.search-input[disabled] {
+  cursor: not-allowed;
+  color: var(--warmgrey);
+  background-color: var(--white-dark);
 }
 
 .dropdown-content {
