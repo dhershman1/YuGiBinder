@@ -2,8 +2,8 @@
 import { computed, onMounted } from 'vue'
 import { ScrollAreaRoot, ScrollAreaScrollbar, ScrollAreaThumb, ScrollAreaViewport } from 'radix-vue'
 import SearchableDropdown from '@/components/Inputs/SearchableDropdown.vue'
-import { useBindersStore } from '@/stores/binders'
 import { useTagsStore } from '@/stores/tags'
+import { useThumbnailsStore } from '@/stores/thumbnails'
 
 const emits = defineEmits(['submitBinder'])
 const props = defineProps({
@@ -16,8 +16,8 @@ const props = defineProps({
     default: false
   }
 })
-const binderStore = useBindersStore()
 const tagsStore = useTagsStore()
+const thumbnailsStore = useThumbnailsStore()
 
 /**
  * @typedef {Object} Binder
@@ -50,7 +50,16 @@ function handleTagSelect(tag) {
 }
 
 onMounted(async () => {
-  await Promise.all([tagsStore.retrieveTags(), binderStore.retrieveBinderThumbnails()])
+  await Promise.all([tagsStore.retrieveTags(), thumbnailsStore.retrieveBinderThumbnails()])
+
+  if (!props.editMode) {
+    binder.value = {
+      name: '',
+      description: '',
+      chosenTags: [],
+      image: thumbnailsStore.thumbnails[0]
+    }
+  }
 })
 </script>
 
@@ -111,12 +120,14 @@ onMounted(async () => {
     <div>
       <label for="tags">Tags</label>
       <span class="input__subtext">
-        <p>Tags can be used to help others find your binder</p>
+        <p>Tags can be used to help others find your binder, you are allowed 10 tags per binder</p>
       </span>
       <searchable-dropdown
         @select="handleTagSelect"
         :tags="options"
+        :disabled="loading || binder.chosenTags.length >= 10"
       />
+      <span class="input__subtext">Tags: {{ binder.chosenTags.length }} / 10</span>
       <section class="tags">
         <div
           v-for="tag in binder.chosenTags"
@@ -144,7 +155,7 @@ onMounted(async () => {
         <scroll-area-viewport class="scroll-area__viewport">
           <div class="thumbnails">
             <div
-              v-for="thumbnail in binderStore.thumbnails"
+              v-for="thumbnail in thumbnailsStore.thumbnails"
               class="thumbnail"
               :key="thumbnail.id"
             >
