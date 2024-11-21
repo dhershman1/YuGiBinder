@@ -51,8 +51,8 @@ export const useCardsStore = defineStore('cards', () => {
       }
     })
 
-    currentCard.value = data
-    return data
+    currentCard.value = data[0]
+    return data[0]
   }
 
   async function retrieveCardById(id) {
