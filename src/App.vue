@@ -261,10 +261,6 @@ watch(user, (newUser) => {
 </template>
 
 <style scoped>
-main {
-  display: grid;
-}
-
 .navbar {
   display: flex;
   align-items: center;
