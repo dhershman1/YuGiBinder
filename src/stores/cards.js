@@ -1,7 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import { usePaginationStore } from './pagination'
-import { useAuthDependencies } from '@/composables/auth'
 import axiosNoAuth from 'axios'
 
 export const useCardsStore = defineStore('cards', () => {
