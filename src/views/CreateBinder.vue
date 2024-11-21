@@ -1,13 +1,23 @@
 <script setup>
-import { onMounted, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import DOMPurify from 'dompurify'
 import { useRouter } from 'vue-router'
-import { useTagsStore } from '@/stores/tags'
 import { useBindersStore } from '@/stores/binders'
 import Loader from '@/components/Loader.vue'
 import BinderForm from '@/components/Forms/BinderForm.vue'
+import DotLoader from '@/components/DotLoader.vue'
 
-const tagsStore = useTagsStore()
+const props = defineProps({
+  binderId: {
+    type: String,
+    required: true
+  },
+  isEditing: {
+    type: Boolean,
+    default: false
+  }
+})
+
 const binderStore = useBindersStore()
 const router = useRouter()
 
@@ -17,27 +27,48 @@ const creatingBinder = ref({
   chosenTags: [],
   image: {}
 })
-
 const loading = ref(true)
 const creating = ref(false)
 
+const headerTxt = computed(() => {
+  return props.isEditing ? 'Update Binder' : 'Create Binder'
+})
+
 async function handleFormSubmit(binder) {
   creating.value = true
-  await binderStore.createBinder({
-    name: binder.name,
-    description: DOMPurify.sanitize(binder.description),
-    tags: binder.chosenTags,
-    thumbnail: binder.image.id
-  })
+  if (props.isEditing && props.binderId) {
+    await binderStore.updateBinder({
+      id: props.binderId,
+      name: binder.name,
+      description: DOMPurify.sanitize(binder.description),
+      tags: binder.chosenTags.slice(0, 10),
+      thumbnail: binder.image.id
+    })
+  } else {
+    await binderStore.createBinder({
+      name: binder.name,
+      description: DOMPurify.sanitize(binder.description),
+      tags: binder.chosenTags.slice(0, 10),
+      thumbnail: binder.image.id
+    })
+  }
 
   creating.value = false
   return router.replace('/')
 }
 
 onMounted(async () => {
-  await Promise.all([tagsStore.retrieveTags(), binderStore.retrieveBinderThumbnails()])
+  if (props.isEditing) {
+    const binder = await binderStore.retrieveBinderById(props.binderId, 'yes')
+    console.log(binder)
+    creatingBinder.value = {
+      name: binder.name,
+      description: binder.description,
+      chosenTags: binder.tags,
+      image: binder.thumbnail
+    }
+  }
 
-  creatingBinder.value.image = binderStore.thumbnails[0]
   loading.value = false
 })
 </script>
@@ -47,9 +78,17 @@ onMounted(async () => {
     class="form-container"
     v-if="!loading"
   >
-    <h1>Create Binder</h1>
+    <h1>{{ headerTxt }}</h1>
+    <p
+      v-if="isEditing"
+      class="subtext"
+    >
+      Editing Binder: {{ creatingBinder.name }}
+    </p>
+    <dot-loader />
     <binder-form
       v-model="creatingBinder"
+      :editMode="isEditing"
       :loading="creating"
       @submitBinder="handleFormSubmit"
     />
@@ -84,6 +123,13 @@ onMounted(async () => {
 }
 
 .form-container h1 {
+  text-align: center;
+}
+
+.subtext {
+  margin: 0;
+  font-size: 14px;
+  color: var(--white-dark);
   text-align: center;
 }
 
