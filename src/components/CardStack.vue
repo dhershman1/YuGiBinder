@@ -109,9 +109,9 @@ onMounted(async () => {
   transform: translate(var(--x), -50%) scale(1.05);
 }
 
-.stacked-card:nth-last-child(1) img {
+/* .stacked-card:nth-last-child(1) img {
   box-shadow: 0 1px 5px 5px rgba(255, 193, 111, 0.5);
-}
+} */
 
 .swap {
   animation: swap 1.3s ease-out forwards;
