@@ -83,9 +83,10 @@ export const useBindersStore = defineStore('binders', () => {
     return response.data
   }
 
-  async function updateBinder() {
+  async function updateBinder(binder) {
     const { axios } = await useAuthDependencies()
-    const response = await axios.put(`/api/binders/${currentBinder.value.id}`, currentBinder.value)
+
+    const response = await axios.put(`/api/binders/${binder.id}`, binder)
 
     return response.data
   }
