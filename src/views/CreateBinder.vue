@@ -5,7 +5,6 @@ import { useRouter } from 'vue-router'
 import { useBindersStore } from '@/stores/binders'
 import Loader from '@/components/Loader.vue'
 import BinderForm from '@/components/Forms/BinderForm.vue'
-import DotLoader from '@/components/DotLoader.vue'
 
 const props = defineProps({
   binderId: {
@@ -85,7 +84,6 @@ onMounted(async () => {
     >
       Editing Binder: {{ creatingBinder.name }}
     </p>
-    <dot-loader />
     <binder-form
       v-model="creatingBinder"
       :editMode="isEditing"
