@@ -27,7 +27,7 @@ function moveCard() {
 
 onMounted(async () => {
   cards.value = await cardsStore.retrieveRandomCard(5)
-  autoplayInterval.value = setInterval(moveCard, 2500)
+  autoplayInterval.value = setInterval(moveCard, 3000)
   loading.value = false
   await nextTick()
   stack.value = document.querySelector('.stack')
