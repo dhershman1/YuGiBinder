@@ -53,6 +53,7 @@ const emits = defineEmits(['confirm', 'cancel'])
   position: fixed;
   inset: 0;
   animation: overlayShow 150ms cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 1;
 }
 
 .alert__content {
@@ -70,6 +71,7 @@ const emits = defineEmits(['confirm', 'cancel'])
   max-height: 85vh;
   padding: 25px;
   animation: contentShow 150ms cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 2;
 }
 
 .alert__content:focus {
