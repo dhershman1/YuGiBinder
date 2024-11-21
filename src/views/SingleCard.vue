@@ -10,13 +10,14 @@ const props = defineProps({
 })
 const cardsStore = useCardsStore()
 const loading = ref(true)
+const card = ref(null)
 
 onMounted(async () => {
   try {
     if (props.isRandom) {
-      await cardsStore.retrieveRandomCard()
+      card.value = (await cardsStore.retrieveRandomCard())[0]
     } else {
-      await cardsStore.retrieveCardById(props.cardId)
+      card.value = await cardsStore.retrieveCardById(props.cardId)
     }
     loading.value = false
   } catch (error) {
@@ -32,8 +33,8 @@ onMounted(async () => {
     v-if="!loading"
     class="card-view"
   >
-    <h1>Card View {{ cardsStore.currentCard.id }}</h1>
-    <floating-card :img="`https://imgs.yugibinder.com/cards/small/${cardsStore.currentCard.id}.jpg`" />
+    <h1>Card View {{ card.id }}</h1>
+    <floating-card :img="`https://imgs.yugibinder.com/cards/small/${card.id}.jpg`" />
   </div>
   <loader
     v-else

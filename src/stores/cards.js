@@ -43,16 +43,18 @@ export const useCardsStore = defineStore('cards', () => {
     return data
   }
 
-  async function retrieveRandomCard() {
+  async function retrieveRandomCard(limit = 1) {
     const { data } = await axiosNoAuth('/api/cards/random', {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json'
+      },
+      params: {
+        limit
       }
     })
 
-    currentCard.value = data[0]
-    return data[0]
+    return data
   }
 
   async function retrieveCardById(id) {
