@@ -42,7 +42,9 @@ const isValid = computed(() => {
 
 const options = computed(() => {
   // Dedeupe already selected tags out of the data
-  return tagsStore.tags.filter((tag) => !binder.value.chosenTags.includes(tag))
+  return tagsStore.tags.filter((tag) => {
+    return !binder.value.chosenTags.some((t) => t.id === tag.id)
+  })
 })
 
 function handleTagSelect(tag) {
