@@ -17,22 +17,23 @@ const paginationStore = usePaginationStore()
 const { width } = useWindowSize()
 
 const emits = defineEmits(['update:page'])
-defineProps({
-  total: Number,
-  defaultPage: Number
+const props = defineProps({
+  siblings: Number
 })
 
 const siblingCount = computed(() => {
+  if (props.siblings) return props.siblings
+
   return width.value > 768 ? 1 : 0
 })
 </script>
 
 <template>
   <pagination-root
-    :total="paginationStore.totalPages"
+    :total="paginationStore.totalItems"
     :sibling-count="siblingCount"
     show-edges
-    :default-page="paginationStore.currentPage"
+    :default-page="1"
     @update:page="emits('update:page', $event)"
   >
     <pagination-list
