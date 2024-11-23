@@ -4,15 +4,19 @@ import { useWindowSize } from '@vueuse/core'
 import DOMPurify from 'dompurify'
 import { marked } from 'marked'
 import { useRouter } from 'vue-router'
+import Draggable from 'vuedraggable'
 import { useBindersStore } from '@/stores/binders'
 import { useCardsStore } from '@/stores/cards'
 import { useRarityStore } from '@/stores/rarity'
 import { useToastStore } from '@/stores/toasts'
+import { usePaginationStore } from '@/stores/pagination'
 import Loader from '@/components/Loader.vue'
-import FiltersSidebar from '@/components/FiltersSidebar.vue'
 import BinderPanel from '@/components/Panels/BinderPanel.vue'
 import ActionPanel from '@/components/Panels/ActionPanel.vue'
 import FloatingOverlay from '@/components/FloatingOverlay.vue'
+import PlaceholderCard from '@/components/PlaceholderCard.vue'
+import Pagination from '@/components/Pagination.vue'
+import ContextMenu from '@/components/ContextMenu.vue'
 
 const props = defineProps({
   id: String,
@@ -21,6 +25,7 @@ const props = defineProps({
 const binderStore = useBindersStore()
 const cardsStore = useCardsStore()
 const rarityStore = useRarityStore()
+const paginationStore = usePaginationStore()
 const { width } = useWindowSize()
 
 const router = useRouter()
@@ -41,6 +46,12 @@ const description = computed(() => {
   }
 
   return showFullDescription.value ? parsedContent.value : parsedContent.value.slice(0, 255) + '...'
+})
+const paginatedItems = computed(() => {
+  const start = (paginationStore.currentPage - 1) * paginationStore.itemsPerPage
+  const end = start + paginationStore.itemsPerPage
+
+  return cardsStore.cardsInBinder.slice(start, end)
 })
 
 function toggleDescription() {
@@ -66,6 +77,29 @@ function removeWhiteSpace(rarity) {
   // This function is going to take rarity and turn it into a simplified version
   // for example: Rare -> rare, Common -> common, Super Rare -> super_rare
   return rarity.replace(/\s/g, '')
+}
+
+function placeholderClicked(idx) {
+  console.log('Placeholder clicked at index:', idx)
+}
+
+function movePage(page) {
+  if (page >= 1 && page <= paginationStore.totalPages.value) {
+    paginationStore.currentPage.value = page
+  }
+}
+
+function onDragEng(event) {
+  const { x } = event.originalEvent // Get the horizontal position of the drag
+  const containerWidth = event.from.offsetWidth // Get the container width
+  const threshold = containerWidth * 0.25 // Threshold for detecting edges
+
+  // Check if dragged to the left or right side
+  if (x < threshold) {
+    movePage(paginationStore.currentPage.value - 1) // Move to the previous page
+  } else if (x > containerWidth - threshold) {
+    movePage(paginationStore.currentPage.value + 1) // Move to the next page
+  }
 }
 
 function getSpacingStyles(card) {
@@ -128,7 +162,7 @@ onMounted(async () => {
       toastStore.addToast('No Binders Found', 'error', 3000)
       return router.replace('/')
     }
-
+    console.error(error)
     toastStore.addToast('Something went wrong, if the issue persists please open a issue about it!', 'error', 5000)
   } finally {
     loading.value = false
@@ -148,7 +182,6 @@ onMounted(async () => {
     class="binder-cards"
     v-if="!loading && binderStore.currentBinder"
   >
-    <filters-sidebar class="sidebar" />
     <section class="binder-cards__content">
       <div class="panel__wrapper">
         <binder-panel />
@@ -177,31 +210,55 @@ onMounted(async () => {
       </div>
       <div class="binder-cards__ygo-cards">
         <div
-          v-for="card in cardsStore.cardsInBinder"
-          :key="card.id"
-          class="media-item img-container"
-          @click="selectCard(card)"
+          v-for="(card, index) in paginatedItems"
+          :key="card?.id || index"
+          class="img-container"
         >
-          <img
-            class="ygo__card"
-            :src="`https://imgs.yugibinder.com/cards/normal/${card.id}.jpg`"
-            :alt="card.name"
+          <context-menu v-if="card">
+            <template #trigger>
+              <section @click="selectCard(card)">
+                <img
+                  class="ygo__card"
+                  :src="`https://imgs.yugibinder.com/cards/normal/${card.id}.jpg`"
+                  :alt="card.name"
+                />
+                <div
+                  :title="card.rarity"
+                  :class="['corner-tag', removeWhiteSpace(card.rarity)]"
+                >
+                  <span class="rarity">{{ rarityStore.getRarityAcronym(card.rarity) }}</span>
+                </div>
+                <div
+                  :title="card.edition"
+                  class="edition-tag"
+                  :style="getSpacingStyles(card)"
+                >
+                  <span>{{ translateEdition(card.edition) }}</span>
+                </div>
+              </section>
+            </template>
+          </context-menu>
+          <placeholder-card
+            :position="index + 1"
+            @click="placeholderClicked(index)"
+            v-else
           />
-          <div
-            :title="card.rarity"
-            :class="['corner-tag', removeWhiteSpace(card.rarity)]"
-          >
-            <span class="rarity">{{ rarityStore.getRarityAcronym(card.rarity) }}</span>
-          </div>
-          <div
-            :title="card.edition"
-            class="edition-tag"
-            :style="getSpacingStyles(card)"
-          >
-            <span>{{ translateEdition(card.edition) }}</span>
-          </div>
         </div>
       </div>
+    </section>
+    <section class="pagination-container">
+      <aside class="items-per-page">
+        <text>Per Page:</text>
+        <select v-model.number="paginationStore.itemsPerPage">
+          <option value="4">4</option>
+          <option value="8">8</option>
+          <option value="12">12</option>
+        </select>
+      </aside>
+      <pagination
+        :siblings="2"
+        @update:page="movePage"
+      />
     </section>
     <floating-overlay
       v-model="showOverlay"
@@ -221,11 +278,36 @@ onMounted(async () => {
   margin-top: 1rem;
 }
 
+.pagination-container {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  margin-top: 1rem;
+  padding: 0 1rem;
+}
+
+.pagination-container nav {
+  justify-self: center;
+}
+
+.items-per-page {
+  display: flex;
+  align-items: center;
+  justify-self: start;
+  gap: 1rem;
+}
+
+.items-per-page select {
+  padding: 0.5rem;
+}
+
 .binder-cards {
   margin-bottom: 2rem;
-  display: grid;
-  grid-template-columns: 1fr 6fr;
-  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  /* display: grid;
+  grid-template-columns: 1fr 6fr; */
+  /* height: 100vh; */
 }
 
 .binder-cards__sidebar {
@@ -484,6 +566,7 @@ onMounted(async () => {
     margin-bottom: 0;
     display: flex;
     flex-direction: column;
+    height: auto;
   }
 
   .binder-cards__content {
