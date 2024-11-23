@@ -3,6 +3,8 @@ import { ref } from 'vue'
 import { usePaginationStore } from './pagination'
 import axiosNoAuth from 'axios'
 
+const MAX_CARDS_IN_BINDERS = 50
+
 function findNextOpenSlot(arr) {
   return arr.findIndex((card) => card.placeholder)
 }
@@ -13,7 +15,7 @@ export const useCardsStore = defineStore('cards', () => {
   const currentCard = ref({})
   const cards = ref([])
   const cardsInBinder = ref(
-    Array.from({ length: 52 }, (_, idx) => {
+    Array.from({ length: MAX_CARDS_IN_BINDERS }, (_, idx) => {
       return {
         id: idx + 1,
         position: idx,
@@ -90,8 +92,7 @@ export const useCardsStore = defineStore('cards', () => {
         'Content-Type': 'application/json'
       }
     })
-    const MAX_CARDS_IN_BINDERS = 52
-    const PER_PAGE = 8
+    const PER_PAGE = 10
 
     paginationStore.setPaginationData({
       currentPage: 1,
