@@ -32,6 +32,7 @@ const siblingCount = computed(() => {
   <pagination-root
     :total="paginationStore.totalItems"
     :sibling-count="siblingCount"
+    :items-per-page="paginationStore.itemsPerPage"
     show-edges
     :default-page="1"
     @update:page="emits('update:page', $event)"
