@@ -1,10 +1,8 @@
 <script setup>
 import { onMounted, ref, computed, nextTick } from 'vue'
-import { useWindowSize } from '@vueuse/core'
 import DOMPurify from 'dompurify'
 import { marked } from 'marked'
 import { useRouter } from 'vue-router'
-import Draggable from 'vuedraggable'
 import { useBindersStore } from '@/stores/binders'
 import { useCardsStore } from '@/stores/cards'
 import { useRarityStore } from '@/stores/rarity'
@@ -26,14 +24,12 @@ const binderStore = useBindersStore()
 const cardsStore = useCardsStore()
 const rarityStore = useRarityStore()
 const paginationStore = usePaginationStore()
-const { width } = useWindowSize()
 
 const router = useRouter()
 const toastStore = useToastStore()
 
 const loading = ref(true)
 const showFullDescription = ref(false)
-const pageSizing = ref(9)
 const showReadMore = ref(false)
 const selectedCard = ref(false)
 const showOverlay = ref(false)
@@ -74,8 +70,11 @@ function translateEdition(edition) {
 }
 
 function removeWhiteSpace(rarity) {
+  if (!rarity) {
+    return ''
+  }
   // This function is going to take rarity and turn it into a simplified version
-  // for example: Rare -> rare, Common -> common, Super Rare -> super_rare
+  // for example: Rare -> rare, Common -> common, Super Rare -> superrare
   return rarity.replace(/\s/g, '')
 }
 
@@ -89,20 +88,13 @@ function movePage(page) {
   }
 }
 
-function onDragEng(event) {
-  const { x } = event.originalEvent // Get the horizontal position of the drag
-  const containerWidth = event.from.offsetWidth // Get the container width
-  const threshold = containerWidth * 0.25 // Threshold for detecting edges
-
-  // Check if dragged to the left or right side
-  if (x < threshold) {
-    movePage(paginationStore.currentPage.value - 1) // Move to the previous page
-  } else if (x > containerWidth - threshold) {
-    movePage(paginationStore.currentPage.value + 1) // Move to the next page
-  }
-}
-
 function getSpacingStyles(card) {
+  if (!card.rarity) {
+    return {
+      left: '2rem'
+    }
+  }
+
   const acronym = rarityStore.getRarityAcronym(card.rarity)
 
   if (acronym.length > 3) {
@@ -129,33 +121,19 @@ function getSpacingStyles(card) {
 }
 
 onMounted(async () => {
-  if (width.value < 768) {
-    pageSizing.value = 6
-  } else if (width.value < 1024) {
-    pageSizing.value = 9
-  } else {
-    pageSizing.value = 12
-  }
-
   try {
     if (props.isRandom) {
       await binderStore.retrieveRandomBinder()
       if (!binderStore.currentBinder) {
         return
       }
-      await cardsStore.retrieveCardsInBinder(binderStore.currentBinder.id, {
-        limit: pageSizing.value,
-        offset: 0
-      })
+      await cardsStore.retrieveCardsInBinder(binderStore.currentBinder.id)
     } else {
       await binderStore.retrieveBinderById(props.id)
       if (!binderStore.currentBinder) {
         return
       }
-      await cardsStore.retrieveCardsInBinder(props.id, {
-        limit: pageSizing.value,
-        offset: 0
-      })
+      await cardsStore.retrieveCardsInBinder(props.id)
     }
   } catch (error) {
     if (error.status === 404) {
@@ -208,13 +186,7 @@ onMounted(async () => {
           </button>
         </div>
       </div>
-      <div class="binder-cards__ygo-cards">
-        <!-- <draggable
-          v-model="paginatedItems"
-          group="ygo-cards"
-          item-key="id"
-        >
-        </draggable> -->
+      <section class="binder-cards__ygo-cards">
         <div
           v-for="(card, index) in paginatedItems"
           :key="card?.id"
@@ -253,15 +225,15 @@ onMounted(async () => {
             v-else
           />
         </div>
-      </div>
+      </section>
     </section>
     <section class="pagination-container">
       <aside class="items-per-page">
         <text>Per Page:</text>
         <select v-model.number="paginationStore.itemsPerPage">
-          <option value="4">4</option>
-          <option value="8">8</option>
-          <option value="12">12</option>
+          <option value="5">5</option>
+          <option value="10">10</option>
+          <option value="20">20</option>
         </select>
       </aside>
       <pagination
@@ -348,7 +320,7 @@ onMounted(async () => {
   display: grid;
   margin-top: 1rem;
   gap: 1rem;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(5, 1fr);
 }
 
 .ygo__card {
