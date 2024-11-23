@@ -84,8 +84,8 @@ function placeholderClicked(idx) {
 }
 
 function movePage(page) {
-  if (page >= 1 && page <= paginationStore.totalPages.value) {
-    paginationStore.currentPage.value = page
+  if (page >= 1 && page <= paginationStore.totalPages) {
+    paginationStore.currentPage = page
   }
 }
 
@@ -209,12 +209,21 @@ onMounted(async () => {
         </div>
       </div>
       <div class="binder-cards__ygo-cards">
+        <!-- <draggable
+          v-model="paginatedItems"
+          group="ygo-cards"
+          item-key="id"
+        >
+        </draggable> -->
         <div
           v-for="(card, index) in paginatedItems"
-          :key="card?.id || index"
+          :key="card?.id"
           class="img-container"
         >
-          <context-menu v-if="card">
+          <context-menu
+            v-if="!card.placeholder"
+            :card-id="card.id"
+          >
             <template #trigger>
               <section @click="selectCard(card)">
                 <img

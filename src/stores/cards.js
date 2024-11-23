@@ -4,7 +4,7 @@ import { usePaginationStore } from './pagination'
 import axiosNoAuth from 'axios'
 
 function findNextOpenSlot(arr) {
-  return arr.findIndex((card) => card == null)
+  return arr.findIndex((card) => card.placeholder)
 }
 
 export const useCardsStore = defineStore('cards', () => {
@@ -12,7 +12,15 @@ export const useCardsStore = defineStore('cards', () => {
   const topCards = ref([])
   const currentCard = ref({})
   const cards = ref([])
-  const cardsInBinder = ref(Array(52))
+  const cardsInBinder = ref(
+    Array.from({ length: 52 }, (_, idx) => {
+      return {
+        id: idx + 1,
+        position: idx,
+        placeholder: true
+      }
+    })
+  )
 
   async function retrieveCards(params) {
     const queryString = new URLSearchParams(params).toString()
