@@ -10,14 +10,14 @@
 <style scoped>
 .uia-loader {
   --_uia-loader-size_default: 5rem;
-  --_uia-loader-main-aligment: var(--uia-loader-main-aligment, center);
+  --_uia-loader-main-alignment: var(--uia-loader-main-alignment, center);
   /*
 	inline-size: var(--uia-loader-main-size, var(--_uia-loader-size_default));
 	block-size: var(--uia-loader-extra-size, var(--_uia-loader-size_default));
 	*/
   display: var(--uia-loader-display, grid);
   gap: var(--uia-loader-caption-gap, 0.5rem);
-  justify-items: var(--_uia-loader-main-aligment);
+  justify-items: var(--_uia-loader-main-alignment);
 }
 
 .uia-loader__canvas {
@@ -29,8 +29,8 @@
   padding: var(--uia-loader-canvas-safe-gap, 0.25rem);
 
   display: var(--uia-loader-canvas-display, grid);
-  justify-items: var(--_uia-loader-main-aligment);
-  align-items: var(--uia-loader-canvas-extra-aligment, center);
+  justify-items: var(--_uia-loader-main-alignment);
+  align-items: var(--uia-loader-canvas-extra-alignment, center);
 }
 
 .uia-square-loader {
