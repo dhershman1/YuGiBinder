@@ -243,7 +243,7 @@ onMounted(async () => {
     </section>
     <floating-overlay
       v-model="showOverlay"
-      :selected-card-id="selectedCard.id"
+      :selected-card-id="String(selectedCard.id)"
     />
   </div>
   <loader
