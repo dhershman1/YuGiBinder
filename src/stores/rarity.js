@@ -56,7 +56,7 @@ export const useRarityStore = defineStore('rarity', () => {
   const rarityAcronyms = computed(() => Object.values(rarities.value))
 
   function getRarityAcronym(rarity) {
-    return rarities.value[rarity]
+    return rarities.value[rarity.toLowerCase()]
   }
 
   return {
