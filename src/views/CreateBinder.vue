@@ -59,7 +59,6 @@ async function handleFormSubmit(binder) {
 onMounted(async () => {
   if (props.isEditing) {
     const binder = await binderStore.retrieveBinderById(props.binderId, 'yes')
-    console.log(binder)
     creatingBinder.value = {
       name: binder.name,
       description: binder.description,

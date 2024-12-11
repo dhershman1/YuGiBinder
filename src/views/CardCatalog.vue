@@ -32,7 +32,6 @@ const limit = computed(() => {
 })
 
 async function fetchCards(page) {
-  loading.value = true
   try {
     const offset = (page - 1) * limit.value
     await cardsStore.retrieveCards({
