@@ -25,7 +25,7 @@
     "jwt-decode": "^4.0.0",
     "marked": "^15.0.0",
     "pinia": "^2.2.4",
-    "radix-vue": "^1.9.9",
+    "radix-vue": "^1.9.11",
     "vite-svg-loader": "^5.1.0",
     "vue": "^3.5.12",
     "vue-feather": "^2.0.0",
